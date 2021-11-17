@@ -1,0 +1,3 @@
+window:
+  # Allow terminal applications to change Alacritty's window title.
+  dynamic_title: true
