@@ -17,7 +17,10 @@ export BEMENU_BACKEND=wayland
 export GDK_BACKEND=wayland
 
 #export VISUAL="alacritty -e vim"
-export EDITOR="vim"
+export EDITOR="nvim"
+alias vi="nvim"
+
+alias E="alacritty -e ranger"
 
 # Automatically start sway on TTY1
 if [ -z $DISPLAY ] && [ "$(tty)" = "/dev/tty1" ]; then
