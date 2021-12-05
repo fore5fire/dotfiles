@@ -29,8 +29,8 @@ output $laptop_screen scale 1.6
 
 output $laptop_screen pos 0 0 res 2256x1504 
 # Position second monitor to the right and above, adjusting for laptop screen scale
-output 'Unknown VG27A M4LMQS014517' pos 1410 -1000 res 2560x1440
-output DP-6 pos 3970 -1100 res 1920x1080
+output 'Unknown VG27A M4LMQS014517' pos 0 -940 res 2560x1440
+output 'Dell Inc. DELL S2415H 5J1MP67306CL' pos -1080 -1150 res 1920x1080 transform 270
 
 ### Output configuration
 # Clamshell Mode
@@ -55,12 +55,12 @@ exec mako
 
 set $swaylock swaylock -f
 exec swayidle -w \
-    timeout 50 'doas xbacklight -get | tee ~/.config/sway/backlight && doas xbacklight -set 1 -time 1000 -fps 30' \
+    timeout 110 'doas xbacklight -get | tee ~/.config/sway/backlight && doas xbacklight -set 1 -time 1000 -fps 30' \
         resume 'doas xbacklight -set $(cat ~/.config/sway/backlight) -time 1000 -fps 30' \
-    timeout 60 'swaymsg "output * dpms off"' \
+    timeout 120 'swaymsg "output * dpms off"' \
         resume 'swaymsg "output * dpms on"' \
-    timeout 65 'swaylock -f' \
-    timeout 300 'systemctl suspend' \
+    timeout 130 'swaylock -f' \
+    timeout 600 'systemctl suspend' \
     before-sleep 'swaylock -f'
 bindsym $mod+Shift+q exec $swaylock
 
