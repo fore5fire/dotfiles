@@ -24,6 +24,6 @@ alias E="alacritty -e ranger"
 
 # Automatically start sway on TTY1
 if [ -z $DISPLAY ] && [ "$(tty)" = "/dev/tty1" ]; then
-	exec sway
+	exec sway &> ~/.swaylog
 fi
 
