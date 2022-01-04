@@ -126,10 +126,10 @@ input "2362:628:PIXA3854:00_093A:0274_Touchpad" {
     workspace_layout tabbed
 
     # Move your focus around
-    bindsym $mod+$left focus parent, focus left
-    bindsym $mod+$down focus parent, focus down
-    bindsym $mod+$up focus parent, focus up
-    bindsym $mod+$right focus parent, focus right
+    bindsym $mod+$left focus parent, focus left sibling, focus child
+    bindsym $mod+$down focus parent, focus down sibling, focus child
+    bindsym $mod+$up focus parent, focus up sibling, focus child
+    bindsym $mod+$right focus parent, focus right sibling, focus child
     # Or use $mod+[up|down|left|right]
     bindsym $mod+Left focus left
     bindsym $mod+Down focus down
