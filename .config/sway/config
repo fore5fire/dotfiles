@@ -27,14 +27,14 @@ xwayland enable
 set $laptop_screen eDP-1
 output $laptop_screen scale 1.6
 
-output $laptop_screen pos 0 0 res 2256x1504 
+output $laptop_screen pos 1080 1150 res 2256x1504 
 # Position second monitor to the right and above, adjusting for laptop screen scale
-output 'Unknown VG27A M4LMQS014517' pos 0 -940 res 2560x1440
-output 'Dell Inc. DELL S2415H 5J1MP67306CL' pos -1080 -1150 res 1920x1080 transform 270
+output 'Unknown VG27A M4LMQS014517' pos 1080 170 res 2560x1440
+output 'Dell Inc. DELL S2415H 5J1MP67306CL' pos 0 0 res 1920x1080 transform 270
 
 # VM displays
-output Virtual-1 res 2560x1440
-
+output Virtual-2 res 2560x1440 pos 1080 170
+output Virtual-1 res 1920x1080 pos 0 0 transform 270
 ### Output configuration
 # Clamshell Mode
 bindswitch --reload --locked lid:on output $laptop_screen disable
