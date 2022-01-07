@@ -40,6 +40,8 @@ set smartcase                     " pay attention to case when caps are used
 set ruler                         " show row and column in footer
 set autochdir
 set colorcolumn=80,100,120
+set nowrap
+
 nnoremap !d :AsyncRun alacritty&<CR>
 
 let g:auto_save = 1
