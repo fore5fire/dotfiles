@@ -21,8 +21,13 @@ bindkey '^[[1;5C' emacs-forward-word
 bindkey '^[[1;5D' emacs-backward-word
 
 setopt SHARE_HISTORY
-setopt HIST_IGNORE_DUPS
+setopt hist_ignore_dups
 setopt HIST_IGNORE_SPACE
 setopt HIST_REDUCE_BLANKS
+
+function precmd () {
+    window_title="\033]0;% ${PWD##*/}\007"
+    echo -ne "$window_title"
+} 
 
 source "$HOME/.profile"
