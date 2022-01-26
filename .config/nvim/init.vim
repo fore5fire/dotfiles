@@ -39,7 +39,7 @@ set incsearch                     " show search results as I type
 set smartcase                     " pay attention to case when caps are used
 set ruler                         " show row and column in footer
 set autochdir
-set colorcolumn=80,100,120
+set colorcolumn=81,101,121
 set nowrap
 
 nnoremap !d :AsyncRun alacritty&<CR>
