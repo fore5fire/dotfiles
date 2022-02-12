@@ -13,8 +13,10 @@ Plugin 'tpope/vim-fugitive'
 Plugin 'skywind3000/asyncrun.vim'
 Plugin '907th/vim-auto-save'
 "Plugin 'fatih/vim-go'
+Plugin 'tpope/vim-surround'
 Plugin 'jiangmiao/auto-pairs'
-Plugin 'jparise/vim-graphql'
+Plugin 'hashivim/vim-hashicorp-tools'
+Plugin 'jvirtanen/vim-hcl'
 Plugin 'baverman/vial'
 Plugin 'baverman/vial-http'
 
@@ -44,10 +46,14 @@ set incsearch                     " show search results as I type
 set smartcase                     " pay attention to case when caps are used
 set ruler                         " show row and column in footer
 set autochdir
+set nowrap
+set autoread
+
 set colorcolumn=81,101,121
 highlight ColorColumn ctermbg=16
 hi MatchParen cterm=bold ctermbg=none ctermfg=red
-set nowrap
+
+set noswapfile
 
 nnoremap !d :AsyncRun alacritty&<CR>
 
