@@ -48,6 +48,7 @@ set ruler                         " show row and column in footer
 set autochdir
 set nowrap
 set autoread
+set undofile
 
 set colorcolumn=81,101,121
 highlight ColorColumn ctermbg=16
