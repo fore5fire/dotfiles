@@ -94,6 +94,9 @@ input "2362:628:PIXA3854:00_093A:0274_Touchpad" {
    middle_emulation enabled
    click_method clickfinger
 }
+
+input * repeat_delay 200
+
 #
 # You can get the names of your inputs by running: swaymsg -t get_inputs
 # Read `man 5 sway-input` for more information about this section.
@@ -276,6 +279,6 @@ exec_always sleep 1 && killall -USR1 waybar
 font pango:SourceCodePro Medium 7
 
 # App shortcuts
-bindsym $mod+t exec firefox --new-window
+bindsym $mod+t exec qb
 
 include local

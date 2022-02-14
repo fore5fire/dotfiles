@@ -1,5 +1,5 @@
 # Setup PATH
-export PATH="$HOME/bin:$PATH"
+export PATH="$HOME/.bin:$PATH"
 
 # Use gnupg as the SSH agent
 export GPG_TTY="$(tty)"
