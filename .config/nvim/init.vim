@@ -9,7 +9,10 @@ call vundle#begin("~/.config/nvim/bundle")
 " let Vundle manage Vundle, required
 Plugin 'VundleVim/Vundle.vim'
 
+" Git
 Plugin 'tpope/vim-fugitive'
+Plugin 'airblade/vim-gitgutter'
+
 Plugin 'skywind3000/asyncrun.vim'
 Plugin '907th/vim-auto-save'
 "Plugin 'fatih/vim-go'
@@ -49,6 +52,18 @@ set autochdir
 set nowrap
 set autoread
 set undofile
+set updatetime=100
+
+" gitgutter setup
+let g:gitgutter_signs = 0
+let g:gitgutter_highlight_linenrs = 1
+highlight link GitGutterAddLineNr DiffAdd
+highlight link GitGutterChangeLineNr DiffChange
+highlight link GitGutterDeleteLineNr DiffDelete
+highlight link GitGutterChangeDeleteLineNr DiffChange
+highlight DiffAdd ctermfg=lightgreen ctermbg=none
+highlight DiffChange ctermfg=blue ctermbg=none
+highlight DiffDelete ctermfg=red ctermbg=none
 
 set colorcolumn=81,101,121
 highlight ColorColumn ctermbg=16
