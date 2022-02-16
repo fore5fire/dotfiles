@@ -9,6 +9,8 @@ call vundle#begin("~/.config/nvim/bundle")
 " let Vundle manage Vundle, required
 Plugin 'VundleVim/Vundle.vim'
 
+Plugin 'nvim-treesitter/nvim-treesitter'
+
 " Git
 Plugin 'tpope/vim-fugitive'
 Plugin 'airblade/vim-gitgutter'
@@ -22,6 +24,7 @@ Plugin 'hashivim/vim-hashicorp-tools'
 Plugin 'jvirtanen/vim-hcl'
 Plugin 'baverman/vial'
 Plugin 'baverman/vial-http'
+Plugin 'lukas-reineke/indent-blankline.nvim'
 
 "" LSP setup
 Plugin 'neovim/nvim-lspconfig'
@@ -53,6 +56,7 @@ set nowrap
 set autoread
 set undofile
 set updatetime=100
+set mouse=a
 
 " gitgutter setup
 let g:gitgutter_signs = 0
@@ -74,6 +78,16 @@ set noswapfile
 nnoremap !d :AsyncRun alacritty&<CR>
 
 let g:auto_save = 1
+
+" Format on save
+autocmd BufWritePre *.py lua vim.lsp.buf.formatting_sync(nil, 1000)
+autocmd BufWritePre *.py.in lua vim.lsp.buf.formatting_sync(nil, 1000)
+
+autocmd BufWritePre *.go lua vim.lsp.buf.formatting_sync(nil, 1000)
+autocmd BufWritePre *.go.in lua vim.lsp.buf.formatting_sync(nil, 1000)
+
+highlight IndentBlanklineChar ctermfg=gray cterm=nocombine
+highlight IndentBlanklineContextChar ctermfg=blue cterm=nocombine
 
 " Setup lspconfig
 
@@ -169,5 +183,39 @@ for _, lsp in ipairs(servers) do
     capabilities = capabilities,
   }
 end
+
+-- Setup indent-blankline
+vim.opt.list = true
+vim.opt.listchars:append("trail:⋅")
+
+require("indent_blankline").setup {
+    show_end_of_line = false,
+    space_char_blankline = " ",
+    show_current_context = true,
+    show_trailing_blankline_indent = false,
+
+    context_patterns = {
+        "class",
+        "^func",
+        "^fn",
+        "method",
+        "^if",
+        "while",
+        "for",
+        "with",
+        "try",
+        "type",
+        "typedef",
+        "import",
+        "except",
+        "arguments",
+        "argument_list",
+        "object",
+        "dictionary",
+        "element",
+        "table",
+        "tuple",
+    },
+}
 
 EOF
