@@ -57,6 +57,7 @@ set autoread
 set undofile
 set updatetime=100
 set mouse=a
+set scrolloff=20
 
 " gitgutter setup
 let g:gitgutter_signs = 0
