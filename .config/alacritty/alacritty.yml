@@ -1,3 +1,32 @@
 window:
   # Allow terminal applications to change Alacritty's window title.
   dynamic_title: true
+
+colors:
+  primary:
+    background: '0x000c0f'
+    foreground: '0x11bfc2'
+
+  normal:
+    black: '0x0a0f14'
+    red: '0xbf006e'
+    green: '0x1ac687'
+    yellow: '0x339705'
+    blue: '0x045fd6'
+    magenta: '0x786aff'
+    cyan: '0x049bce'
+    white: '0x98d1ce'
+
+  bright:
+    black: '0x1f2d3d'
+    red: '0xffb7cb'
+    green: '0xa6ffcd'
+    yellow: '0xb1fd90'
+    blue: '0x97c2ff'
+    magenta: '0xf7f6ff'
+    cyan: '0x9bcde2'
+    white: '0xb2d1de'
+
+font:
+  normal:
+    family: mononoki nerd font

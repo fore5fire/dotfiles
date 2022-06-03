@@ -51,6 +51,7 @@ set tabstop=4
 set softtabstop=4
 set shiftwidth=0
 set expandtab                     " use spaces, not tab characters
+autocmd FileType dart setlocal shiftwidth=2 softtabstop=2 expandtab
 set showmatch                     " show bracket matches
 set ignorecase                    " ignore case in search
 set hlsearch                      " highlight all search matches
@@ -61,7 +62,7 @@ set autochdir
 set nowrap
 set autoread
 set undofile
-set updatetime=200
+set updatetime=100
 set mouse=a
 set scrolloff=100000
 
@@ -192,7 +193,8 @@ capabilities = require('cmp_nvim_lsp').update_capabilities(capabilities)
 
 -- Mappings.
 -- See `:help vim.diagnostic.*` for documentation on any of the below functions
-vim.api.nvim_set_keymap('n', '<space>d', '<cmd>lua vim.diagnostic.open_float()<CR>', opts)
+local opts = { noremap=true, silent=true }
+vim.api.nvim_set_keymap('n', '<space>e', '<cmd>lua vim.diagnostic.open_float()<CR>', opts)
 vim.api.nvim_set_keymap('n', '[d', '<cmd>lua vim.diagnostic.goto_prev()<CR>', opts)
 vim.api.nvim_set_keymap('n', ']d', '<cmd>lua vim.diagnostic.goto_next()<CR>', opts)
 vim.api.nvim_set_keymap('n', '<space>q', '<cmd>lua vim.diagnostic.setloclist()<CR>', opts)
@@ -224,7 +226,7 @@ end
 local lspconfig = require('lspconfig')
 
 -- Enable some language servers with the additional completion capabilities offered by nvim-cmp
-local servers = {  'gopls', 'tsserver', 'pylsp', 'clangd' }
+local servers = {  'gopls', 'tsserver', 'pylsp', 'clangd', 'rls' }
 for _, lsp in ipairs(servers) do
   lspconfig[lsp].setup {
     on_attach = on_attach,
