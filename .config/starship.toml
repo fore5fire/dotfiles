@@ -1,0 +1,27 @@
+right_format = "$cmd_duration $time"
+[package]
+disabled = true
+[azure]
+disabled = true
+[aws]
+disabled = true
+[gcloud]
+disabled = true
+[directory]
+truncation_length = 2
+fish_style_pwd_dir_length = 1
+[cmd_duration]
+format = "[$duration]($style)"
+[time]
+disabled = false
+format = "[$time]($style)"
+time_format = "%H:%M"
+style = "bold green"
+[[battery.display]] # "bold red" style and discharging_symbol when capacity is between 0% and 10%
+threshold = 10
+style = "bold red"
+
+[[battery.display]] # "bold yellow" style and 💦 symbol when capacity is between 10% and 30%
+threshold = 30
+style = "bold yellow"
+discharging_symbol = "💦"
