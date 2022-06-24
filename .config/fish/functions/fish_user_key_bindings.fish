@@ -3,4 +3,5 @@ function fish_user_key_bindings
     for mode in default insert visual
         bind -M $mode \cc -m default 'echo; echo '^C'; commandline ""; commandline -f repaint'
     end
+    bind -M default \$ -m default accept-autosuggestion
 end
