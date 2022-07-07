@@ -1,0 +1,3 @@
+event=button/lid
+action=/etc/acpi/actions/lm_lid.sh %e
+
