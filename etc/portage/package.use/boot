@@ -2,3 +2,17 @@ sys-apps/busybox static -pam
 >=virtual/libcrypt-2 static-libs
 >=sys-libs/libxcrypt-4.4.27 static-libs
 >=sys-libs/libselinux-3.4 static-libs
+
+sys-kernel/dracut device-mapper
+
+sys-fs/cryptsetup static nettle -kernel -gcrypt -udev -openssl
+sys-fs/lvm2 -udev static static-libs
+dev-libs/libaio static-libs
+dev-libs/json-c static-libs
+dev-libs/popt static-libs
+sys-apps/util-linux static-libs
+app-crypt/argon2 static-libs
+sys-fs/lvm2 static-libs
+sys-libs/readline static-libs
+sys-libs/ncurses static-libs
+dev-libs/libpcre2 static-libs abi_x86_32
