@@ -1,0 +1,4 @@
+sys-apps/busybox static -pam
+>=virtual/libcrypt-2 static-libs
+>=sys-libs/libxcrypt-4.4.27 static-libs
+>=sys-libs/libselinux-3.4 static-libs
