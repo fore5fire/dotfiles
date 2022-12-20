@@ -1,0 +1,42 @@
+#!/bin/busybox sh
+
+/bin/busybox --install -s
+
+# Mount the /proc, /sys, and /dev filesystems.
+mount -t proc none /proc
+mount -t sysfs none /sys
+mount -t devtmpfs none /dev
+
+cmdline() {
+    local value
+    value=" $(cat /proc/cmdline) "
+    value="${value##* ${1}=}"
+    value="${value%% *}"
+    [ "${value}" != "" ] && echo "${value}"
+}
+
+rescue_shell() {
+    echo "Something went wrong. Dropping to a shell."
+    exec sh
+}
+
+# disable kernel messages from popping onto the screen.
+echo 0 > /proc/sys/kernel/printk
+
+# Decrypt the root filesystem.
+cryptsetup --tries 5 --allow-discards luksOpen "$(findfs $(cmdline luksdisk))" luksroot || rescue_shell
+
+# re-enable kernel messages.
+echo 1 > /proc/sys/kernel/printk
+
+# Mount the root filesystem.
+mount -o "$(cmdline rootflags)" /dev/mapper/luksroot /mnt/root || rescue_shell
+
+# Clean up.
+umount /proc
+umount /sys
+umount /dev
+
+# Boot the real thing.
+exec switch_root /mnt/root /sbin/init
+
