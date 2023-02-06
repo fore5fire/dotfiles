@@ -1,0 +1,11 @@
+#dev-lang/rust -rls -rust-src -clippy -rustfmt -wasm -llvm_targets_WebAssembly llvm_targets_X86 -llvm_targets_AArch64 -llvm_targets_ARM
+dev-lang/rust-bin
+
+app-containers/podman btrfs rootless fuse
+
+net-misc/openssh security-key
+
+sys-devel/gcc multilib
+
+>=sys-apps/util-linux-2.38.1 python
+>=sys-boot/grub-2.06-r4 grub_platforms_efi-32

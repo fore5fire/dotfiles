@@ -1,0 +1,3 @@
+sys-kernel/linux-firmware savedconfig
+dev-libs/nettle static-libs
+dev-libs/gmp static-libs

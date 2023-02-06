@@ -1,0 +1,38 @@
+gui-wm/sway -swaybar -swaynag X
+gui-libs/wlroots X
+>=media-libs/libglvnd-1.4.0 X
+dev-cpp/cairomm X
+x11-libs/cairo X
+media-libs/mesa i915 iris -radeon X
+sys-auth/seatd server
+
+gui-apps/waybar -tray mpd pulseaudio
+dev-libs/libdbusmenu gtk3
+
+# GTK
+x11-libs/gtk+ X
+
+# QT
+dev-qt/qtcore icu
+dev-python/PyQt5 declarative multimedia sql opengl dbus gui printsupport widgets network webchannel
+dev-qt/qtwebengine widgets
+dev-libs/libxml2 icu
+dev-qt/qtwebchannel qml
+sys-libs/zlib minizip
+dev-qt/qtmultimedia widgets
+x11-libs/libxkbcommon X
+dev-qt/qtgui egl X
+media-libs/libsndfile minimal
+
+# Cura
+dev-python/numpy lapack
+dev-python/PyQt5 svg
+sys-devel/gcc fortran
+
+# Zoom
+app-text/ghostscript-gpl cups
+
+media-video/vlc chromecast
+
+sys-apps/dbus X
+

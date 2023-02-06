@@ -1,0 +1,4 @@
+www-client/ungoogled-chromium -X
+media-libs/harfbuzz icu
+net-libs/nodejs inspector
+app-text/xmlto text

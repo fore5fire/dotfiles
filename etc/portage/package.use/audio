@@ -1,0 +1,6 @@
+media-sound/pulseaudio bluetooth -dbus -alsa-plugin
+media-sound/pulseaudio-daemon -bluetooth -dbus
+media-libs/libpulse X
+dev-cpp/gtkmm X
+
+media-video/pipewire bluetooth echo-cancel udev pipewire-alsa sound-server gstreamer
