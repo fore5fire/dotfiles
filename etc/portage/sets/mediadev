@@ -1,0 +1,6 @@
+media-libs/gst-plugins-bad
+media-libs/gst-plugins-base
+media-libs/gst-plugins-good
+media-libs/gstreamer
+media-plugins/gst-plugins-libav
+media-tv/v4l-utils

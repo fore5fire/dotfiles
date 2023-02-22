@@ -1,0 +1,13 @@
+app-mobilephone/dfu-util
+cross-arm-none-eabi/binutils
+cross-arm-none-eabi/gcc
+cross-arm-none-eabi/newlib
+cross-avr/avr-libc
+cross-avr/binutils
+cross-avr/gcc
+dev-embedded/avrdude
+dev-embedded/dfu-programmer
+dev-embedded/pico-sdk
+sys-devel/clang
+sys-devel/crossdev
+sys-devel/gcc
