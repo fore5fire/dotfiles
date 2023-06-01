@@ -11,10 +11,7 @@ Plug 'tpope/vim-surround'
 Plug 'jiangmiao/auto-pairs'
 Plug 'hashivim/vim-hashicorp-tools'
 Plug 'jvirtanen/vim-hcl'
-Plug 'baverman/vial'
-Plug 'baverman/vial-http'
 Plug 'lukas-reineke/indent-blankline.nvim'
-Plug 'ggandor/lightspeed.nvim'
 
 " Telescope Setup
 Plug 'nvim-lua/plenary.nvim'
@@ -76,7 +73,6 @@ highlight link GitGutterChangeDeleteLineNr DiffChange
 highlight DiffAdd ctermfg=lightgreen ctermbg=none
 highlight DiffChange ctermfg=blue ctermbg=none
 highlight DiffDelete ctermfg=red ctermbg=none
-highlight LightspeedCursor ctermbg=white
 
 set colorcolumn=81,101,121
 highlight ColorColumn ctermbg=16
