@@ -6,9 +6,9 @@ call plug#begin()
 Plug 'nvim-treesitter/nvim-treesitter'
 
 Plug 'skywind3000/asyncrun.vim'
-Plug 'Pocco81/AutoSave.nvim'
+Plug 'Pocco81/auto-save.nvim'
 Plug 'tpope/vim-surround'
-Plug 'jiangmiao/auto-pairs'
+" Plug 'jiangmiao/auto-pairs'
 Plug 'hashivim/vim-hashicorp-tools'
 Plug 'jvirtanen/vim-hcl'
 Plug 'lukas-reineke/indent-blankline.nvim'
@@ -35,6 +35,16 @@ Plug 'hrsh7th/cmp-nvim-lsp'
 Plug 'saadparwaiz1/cmp_luasnip'
 Plug 'L3MON4D3/LuaSnip'
 
+Plug 'tamton-aquib/duck.nvim'
+
+" Status line
+Plug 'nvim-lualine/lualine.nvim'
+Plug 'nvim-tree/nvim-web-devicons'
+
+" LLM Support
+Plug 'MunifTanjim/nui.nvim'
+Plug 'Bryley/neoai.nvim'
+
 call plug#end()
 
 filetype plugin indent on
@@ -55,13 +65,17 @@ set hlsearch                      " highlight all search matches
 set incsearch                     " show search results as I type
 set smartcase                     " pay attention to case when caps are used
 set ruler                         " show row and column in footer
-set autochdir
 set nowrap
 set autoread
 set undofile
 set updatetime=100
 set mouse=a
 set scrolloff=100000
+set tw=80
+
+let g:AutoPairsFlyMode = 0
+
+set termguicolors
 
 " gitgutter setup
 let g:gitgutter_signs = 0
@@ -73,12 +87,16 @@ highlight link GitGutterChangeDeleteLineNr DiffChange
 highlight DiffAdd ctermfg=lightgreen ctermbg=none
 highlight DiffChange ctermfg=blue ctermbg=none
 highlight DiffDelete ctermfg=red ctermbg=none
+highlight Visual ctermfg=None ctermbg=DarkRed guibg=white
 
 set colorcolumn=81,101,121
 highlight ColorColumn ctermbg=16
 hi MatchParen cterm=bold ctermbg=none ctermfg=red
 
 set noswapfile
+set backupdir=~/.local/share/nvim/backup//
+set backupskip=/tmp/*,/private/tmp/* 
+set backup
 
 nnoremap !d :AsyncRun alacritty&<CR>
 
@@ -89,22 +107,27 @@ augroup vimrc
 
     " Track insert mode with a variable
 
-    autocmd BufWritePre *.py lua vim.lsp.buf.formatting_sync(nil, 1000)
-    autocmd BufWritePre *.py.in lua vim.lsp.buf.formatting_sync(nil, 1000)
+    autocmd BufWritePre *.py lua vim.lsp.buf.format(nil, 1000)
+    autocmd BufWritePre *.py.in lua vim.lsp.buf.format(nil, 1000)
 
-    autocmd BufWritePre *.go lua vim.lsp.buf.formatting_sync(nil, 1000)
-    autocmd BufWritePre *.go.in lua vim.lsp.buf.formatting_sync(nil, 1000)
+    autocmd BufWritePre *.go lua vim.lsp.buf.format(nil, 1000)
+    autocmd BufWritePre *.go.in lua vim.lsp.buf.format(nil, 1000)
+
+    autocmd BufWritePre *.rs lua vim.lsp.buf.format(nil, 1000)
+    autocmd BufWritePre *.rs.in lua vim.lsp.buf.format(nil, 1000)
 
 augroup END
 
 highlight IndentBlanklineChar ctermfg=gray cterm=nocombine
 highlight IndentBlanklineContextChar ctermfg=blue cterm=nocombine
 
-" Setup lspconfig
+highlight Comment ctermfg=DarkGray cterm=nocombine
 
 lua << EOF
 
 local opts = { noremap=true, silent=true }
+vim.api.nvim_set_keymap('n', '<space>dh', '<cmd>lua require(\'duck\').hatch()<cr>', opts)
+vim.api.nvim_set_keymap('n', '<space>dc', '<cmd>lua require(\'duck\').cook()<cr>', opts)
 
 local telescope = require('telescope')
 telescope.setup {
@@ -125,10 +148,11 @@ telescope.load_extension('fzf')
 telescope.load_extension('dap')
 telescope.load_extension('file_browser')
 
-vim.api.nvim_set_keymap('n', '<space>s', '<cmd>lua require(\'telescope.builtin\').find_files()<cr>', opts)
+vim.api.nvim_set_keymap('n', '<space>f', '<cmd>lua require(\'telescope.builtin\').find_files()<cr>', opts)
 vim.api.nvim_set_keymap('n', '<space>/', '<cmd>lua require(\'telescope.builtin\').live_grep()<cr>', opts)
 vim.api.nvim_set_keymap('n', '<space>b', '<cmd>lua require(\'telescope.builtin\').buffers()<cr>', opts)
 vim.api.nvim_set_keymap('n', '<space>h', '<cmd>lua require(\'telescope.builtin\').help_tags()<cr>', opts)
+vim.api.nvim_set_keymap('n', '<space>s', '<cmd>lua require(\'telescope.builtin\').lsp_document_symbols()<cr>', opts)
 vim.api.nvim_set_keymap('n', '<space>e', ':Telescope file_browser', opts)
 
 -- nvim-dap-go setup
@@ -185,7 +209,7 @@ cmp.setup({
 
 -- Add additional capabilities supported by nvim-cmp
 local capabilities = vim.lsp.protocol.make_client_capabilities()
-capabilities = require('cmp_nvim_lsp').update_capabilities(capabilities)
+capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
 
 -- Mappings.
 -- See `:help vim.diagnostic.*` for documentation on any of the below functions
@@ -194,6 +218,9 @@ vim.api.nvim_set_keymap('n', '<space>e', '<cmd>lua vim.diagnostic.open_float()<C
 vim.api.nvim_set_keymap('n', '[d', '<cmd>lua vim.diagnostic.goto_prev()<CR>', opts)
 vim.api.nvim_set_keymap('n', ']d', '<cmd>lua vim.diagnostic.goto_next()<CR>', opts)
 vim.api.nvim_set_keymap('n', '<space>q', '<cmd>lua vim.diagnostic.setloclist()<CR>', opts)
+
+vim.api.nvim_set_keymap('n', '<leader>dh', '<cmd>lau require("duck").hatch()<CR>', opts)
+vim.api.nvim_set_keymap('n', '<leader>dc', '<cmd>lau require("duck").cook()<CR>', opts)
 
 -- Use an on_attach function to only map the following keys
 -- after the language server attaches to the current buffer
@@ -222,13 +249,48 @@ end
 local lspconfig = require('lspconfig')
 
 -- Enable some language servers with the additional completion capabilities offered by nvim-cmp
-local servers = {  'gopls', 'tsserver', 'pylsp', 'clangd', 'rls' }
-for _, lsp in ipairs(servers) do
-  lspconfig[lsp].setup {
+lspconfig.gopls.setup {
     on_attach = on_attach,
     capabilities = capabilities,
-  }
-end
+}
+lspconfig.tsserver.setup {
+    on_attach = on_attach,
+    capabilities = capabilities,
+}
+lspconfig.pylsp.setup {
+    on_attach = on_attach,
+    capabilities = capabilities,
+}
+lspconfig.clangd.setup {
+    on_attach = on_attach,
+    capabilities = capabilities,
+}
+lspconfig.rust_analyzer.setup {
+    on_attach = on_attach,
+    capabilities = capabilities,
+    cmd = { "rustup", "run", "stable", "rust-analyzer" },
+    settings = {
+        ["rust-analyzer"] = {
+            imports = {
+                granularity = {
+                    group = "module",
+                },
+                prefix = "self",
+            },
+            cargo = {
+                buildScripts = {
+                    enable = true,
+                },
+            checkOnSave = {
+                    command = "cargo clippy --no-deps --workspace --message-format=json --all-targets",
+                }
+            },
+            procMacro = {
+                enable = true
+            },
+        },
+    },
+}
 
 -- Setup indent-blankline
 vim.opt.list = true
@@ -264,24 +326,148 @@ require("indent_blankline").setup {
     },
 }
 
-local autosave = require("autosave")
+local autosave = require("auto-save")
 
-autosave.setup(
-    {
-        enabled = true,
-        execution_message = "AutoSave: saved at " .. vim.fn.strftime("%H:%M:%S"),
-        events = {"InsertLeave", "TextChanged"},
-        conditions = {
-            exists = true,
-            filename_is_not = {},
-            filetype_is_not = {},
-            modifiable = true
+autosave.setup({
+    enabled = true, -- start auto-save when the plugin is loaded (i.e. when your package manager loads it)
+    execution_message = {
+		message = function() -- message to print on save
+			return ("AutoSave: saved at " .. vim.fn.strftime("%H:%M:%S"))
+		end,
+		dim = 0.18, -- dim the color of `message`
+		cleaning_interval = 1250, -- (milliseconds) automatically clean MsgArea after displaying `message`. See :h MsgArea
+	},
+    trigger_events = {"InsertLeave", "TextChanged"}, -- vim events that trigger auto-save. See :h events
+	-- function that determines whether to save the current buffer or not
+	-- return true: if buffer is ok to be saved
+	-- return false: if it's not ok to be saved
+	condition = function(buf)
+		local fn = vim.fn
+		local utils = require("auto-save.utils.data")
+
+		if
+			fn.getbufvar(buf, "&modifiable") == 1 and
+			utils.not_in(fn.getbufvar(buf, "&filetype"), {}) then
+			return true -- met condition(s), can save
+		end
+		return false -- can't save
+	end,
+    write_all_buffers = false, -- write all buffers when the current one meets `condition`
+    debounce_delay = 135, -- saves the file at most every `debounce_delay` milliseconds
+	callbacks = { -- functions to be executed at different intervals
+		enabling = nil, -- ran when enabling auto-save
+		disabling = nil, -- ran when disabling auto-save
+		before_asserting_save = nil, -- ran before checking `condition`
+		before_saving = nil, -- ran before doing the actual save
+		after_saving = nil -- ran after doing the actual save
+	}
+})
+
+require('neoai').setup{
+    -- Below are the default options, feel free to override what you would like changed
+    ui = {
+        output_popup_text = "NeoAI",
+        input_popup_text = "Prompt",
+        width = 30,      -- As percentage eg. 30%
+        output_popup_height = 80, -- As percentage eg. 80%
+    },
+    models = {
+        {
+            name = "openai",
+            model = "gpt-3.5-turbo"
         },
-        write_all_buffers = false,
-        on_off_commands = true,
-        clean_command_line_interval = 0,
-        debounce_delay = 135
+    },
+    register_output = {
+        ["g"] = function(output)
+            return output
+        end,
+        ["c"] = require("neoai.utils").extract_code_snippets,
+    },
+    inject = {
+        cutoff_width = 80,
+    },
+    prompts = {
+        context_prompt = function(context)
+            return "Here is some code/text for context:\n\n"
+                .. context
+        end,
+    },
+    open_api_key_env = "OPENAI_API_KEY",
+    shortcuts = {
+        {
+            key = "<space>as",
+            use_context = true,
+            prompt = [[
+                Rewrite the text to make it more readable, clear, and concise,
+                and to fix any grammatical, punctuation, or spelling errors
+            ]],
+            modes = { "v" },
+            strip_function = nil,
+        },
+        {
+            key = "<space>ac",
+            use_context = true,
+            prompt = [[
+                Write a comment to summarize the behavior of this code
+            ]],
+            modes = { "v" },
+            strip_function = nil,
+        },
+        {
+            key = "<space>ag",
+            use_context = false,
+            prompt = function ()
+                return [[
+                    Using the following git diff generate a consise and
+                    clear git commit message, with a short title summary
+                    that is 75 characters or less:
+                ]] .. vim.fn.system("git diff --cached")
+            end,
+            modes = { "n" },
+            strip_function = nil,
+        },
+    },
+}
+
+require('lualine').setup {
+  options = {
+    icons_enabled = true,
+    theme = 'auto',
+    component_separators = { left = '', right = ''},
+    section_separators = { left = '', right = ''},
+    disabled_filetypes = {
+      statusline = {},
+      winbar = {},
+    },
+    ignore_focus = {},
+    always_divide_middle = true,
+    globalstatus = false,
+    refresh = {
+      statusline = 1000,
+      tabline = 1000,
+      winbar = 1000,
     }
-)
+  },
+  sections = {
+    lualine_a = {'mode'},
+    lualine_b = {'branch', 'diff', 'diagnostics'},
+    lualine_c = {{'filename', path = 4}},
+    lualine_x = {'encoding', 'fileformat', 'filetype'},
+    lualine_y = {'progress'},
+    lualine_z = {'location'}
+  },
+  inactive_sections = {
+    lualine_a = {},
+    lualine_b = {},
+    lualine_c = {'filename'},
+    lualine_x = {'location'},
+    lualine_y = {},
+    lualine_z = {}
+  },
+  tabline = {},
+  winbar = {},
+  inactive_winbar = {},
+  extensions = {}
+}
 
 EOF
