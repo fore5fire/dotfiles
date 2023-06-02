@@ -16,7 +16,7 @@ media-gfx/cura
 media-libs/mesa
 media-plugins/gst-plugins-libav
 media-sound/pavucontrol
-media-sound/pulseaudio
+media-video/pipewire
 media-video/vlc
 sys-apps/xdg-desktop-portal-gtk
 sys-auth/pambase

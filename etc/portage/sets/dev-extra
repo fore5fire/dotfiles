@@ -2,3 +2,4 @@ net-misc/wuzz
 app-crypt/clevis
 app-crypt/tang
 sci-libs/geos
+app-admin/awscli
