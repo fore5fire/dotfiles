@@ -51,10 +51,6 @@ output * bg /usr/share/backgrounds/sway/Sway_Wallpaper_Blue_1920x1080.png fill
 #
 # You can get the names of your outputs by running: swaymsg -t get_outputs
 
-# Launch GUI services
-exec mako
-exec /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
-
 ### Idle configuration
 
 set $swaylock swaylock -f
@@ -64,8 +60,8 @@ exec swayidle -w \
     timeout 120 'swaymsg "output * dpms off"' \
         resume 'swaymsg "output * dpms on"' \
     timeout 130 'swaylock -f' \
-    timeout 600 'systemctl suspend' \
-    before-sleep 'swaylock -f'
+    timeout 600 'systemctl suspend'
+    #before-sleep 'swaylock -f'
 bindsym $mod+Shift+q exec $swaylock
 
 # Pulse Audio controls
@@ -126,9 +122,6 @@ seat * hide_cursor when-typing enable
 
     # Reload the configuration file
     bindsym $mod+Shift+c reload
-
-    # Exit sway (logs you out of your Wayland session)
-    bindsym $mod+Shift+e exec swaynag -t warning -m 'You pressed the exit shortcut. Do you really want to exit sway? This will end your Wayland session.' -b 'Yes, exit sway' 'swaymsg exit'
 #
 # Moving around:
 #
@@ -272,13 +265,26 @@ bar {
     #     inactive_workspace #32323200 #32323200 #5c5c5c
     }
 }
-exec nm-applet --indicator
-exec blueman-applet
-bindsym $mod+x exec killall -USR1 waybar
-exec_always sleep 1 && killall -USR1 waybar
+
+# Waybar
+#exec nm-applet --indicator
+#exec blueman-applet
+#bindsym $mod+x exec killall -USR1 waybar
+#exec_always sleep 1 && killall -USR1 waybar
+
 font pango:SourceCodePro Medium 7
 
 # App shortcuts
 bindsym $mod+t exec qb
+
+
+# Launch GUI services
+exec mako
+
+exec gentoo-pipewire-launcher &
+exec /usr/libexec/xdg-desktop-portal-gtk -r
+exec /usr/libexec/xdg-desktop-portal-wlr -r
+exec /usr/libexec/flatpak-portal -r
+exec "sh -c 'sleep 5;exec /usr/libexec/xdg-desktop-portal -r'"
 
 include local
