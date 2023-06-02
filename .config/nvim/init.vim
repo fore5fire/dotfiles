@@ -8,13 +8,14 @@ Plug 'nvim-treesitter/nvim-treesitter'
 Plug 'skywind3000/asyncrun.vim'
 Plug 'Pocco81/auto-save.nvim'
 Plug 'tpope/vim-surround'
-" Plug 'jiangmiao/auto-pairs'
 Plug 'hashivim/vim-hashicorp-tools'
 Plug 'jvirtanen/vim-hcl'
 Plug 'lukas-reineke/indent-blankline.nvim'
 
-" Telescope Setup
+" Shared dependencies
 Plug 'nvim-lua/plenary.nvim'
+
+" Telescope Setup
 Plug 'nvim-telescope/telescope.nvim'
 Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'do': 'make' }
 Plug 'nvim-telescope/telescope-file-browser.nvim'
@@ -40,6 +41,7 @@ Plug 'tamton-aquib/duck.nvim'
 " Status line
 Plug 'nvim-lualine/lualine.nvim'
 Plug 'nvim-tree/nvim-web-devicons'
+Plug 'justinhj/battery.nvim'
 
 " LLM Support
 Plug 'MunifTanjim/nui.nvim'
@@ -56,8 +58,11 @@ set clipboard=unnamedplus
 syntax on
 set tabstop=4
 set softtabstop=4
-set shiftwidth=0
+set shiftwidth=4
+set shiftround
 set expandtab                     " use spaces, not tab characters
+set smartindent
+set autoindent
 autocmd FileType dart setlocal shiftwidth=2 softtabstop=2 expandtab
 set showmatch                     " show bracket matches
 set ignorecase                    " ignore case in search
@@ -72,8 +77,6 @@ set updatetime=100
 set mouse=a
 set scrolloff=100000
 set tw=80
-
-let g:AutoPairsFlyMode = 0
 
 set termguicolors
 
@@ -107,14 +110,11 @@ augroup vimrc
 
     " Track insert mode with a variable
 
-    autocmd BufWritePre *.py lua vim.lsp.buf.format(nil, 1000)
-    autocmd BufWritePre *.py.in lua vim.lsp.buf.format(nil, 1000)
+    autocmd BufWritePre *.py lua vim.lsp.buf.formatting_sync(nil, 1000)
+    autocmd BufWritePre *.py.in lua vim.lsp.buf.formatting_sync(nil, 1000)
 
-    autocmd BufWritePre *.go lua vim.lsp.buf.format(nil, 1000)
-    autocmd BufWritePre *.go.in lua vim.lsp.buf.format(nil, 1000)
-
-    autocmd BufWritePre *.rs lua vim.lsp.buf.format(nil, 1000)
-    autocmd BufWritePre *.rs.in lua vim.lsp.buf.format(nil, 1000)
+    autocmd BufWritePre *.go lua vim.lsp.buf.formatting_sync(nil, 1000)
+    autocmd BufWritePre *.rs lua vim.lsp.buf.formatting_sync(nil, 1000)
 
 augroup END
 
@@ -219,9 +219,6 @@ vim.api.nvim_set_keymap('n', '[d', '<cmd>lua vim.diagnostic.goto_prev()<CR>', op
 vim.api.nvim_set_keymap('n', ']d', '<cmd>lua vim.diagnostic.goto_next()<CR>', opts)
 vim.api.nvim_set_keymap('n', '<space>q', '<cmd>lua vim.diagnostic.setloclist()<CR>', opts)
 
-vim.api.nvim_set_keymap('n', '<leader>dh', '<cmd>lau require("duck").hatch()<CR>', opts)
-vim.api.nvim_set_keymap('n', '<leader>dc', '<cmd>lau require("duck").cook()<CR>', opts)
-
 -- Use an on_attach function to only map the following keys
 -- after the language server attaches to the current buffer
 local on_attach = function(client, bufnr)
@@ -268,25 +265,12 @@ lspconfig.clangd.setup {
 lspconfig.rust_analyzer.setup {
     on_attach = on_attach,
     capabilities = capabilities,
-    cmd = { "rustup", "run", "stable", "rust-analyzer" },
     settings = {
-        ["rust-analyzer"] = {
-            imports = {
-                granularity = {
-                    group = "module",
-                },
-                prefix = "self",
-            },
-            cargo = {
-                buildScripts = {
-                    enable = true,
-                },
-            checkOnSave = {
-                    command = "cargo clippy --no-deps --workspace --message-format=json --all-targets",
-                }
-            },
-            procMacro = {
-                enable = true
+        ["rust_analyzer"] = {
+            diagnostics = {
+                enable = true,
+                procMacro = { enable = true },
+                enableExperimental = true,
             },
         },
     },
@@ -429,6 +413,12 @@ require('neoai').setup{
     },
 }
 
+require"battery".setup({})
+local nvimbattery = {
+  function()
+    return require("battery").get_status_line()
+  end,
+}
 require('lualine').setup {
   options = {
     icons_enabled = true,
@@ -449,7 +439,7 @@ require('lualine').setup {
     }
   },
   sections = {
-    lualine_a = {'mode'},
+    lualine_a = {nvimbattery},
     lualine_b = {'branch', 'diff', 'diagnostics'},
     lualine_c = {{'filename', path = 4}},
     lualine_x = {'encoding', 'fileformat', 'filetype'},
