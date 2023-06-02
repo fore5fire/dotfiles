@@ -36,6 +36,13 @@ Plug 'hrsh7th/cmp-nvim-lsp'
 Plug 'saadparwaiz1/cmp_luasnip'
 Plug 'L3MON4D3/LuaSnip'
 
+" DAP Setup
+Plug 'mfussenegger/nvim-dap'
+Plug 'rcarriga/nvim-dap-ui'
+
+" Language Plugins
+Plug 'ray-x/go.nvim'
+
 Plug 'tamton-aquib/duck.nvim'
 
 " Status line
@@ -46,6 +53,9 @@ Plug 'justinhj/battery.nvim'
 " LLM Support
 Plug 'MunifTanjim/nui.nvim'
 Plug 'Bryley/neoai.nvim'
+
+" Theme
+Plug 'EdenEast/nightfox.nvim'
 
 call plug#end()
 
@@ -78,6 +88,7 @@ set mouse=a
 set scrolloff=100000
 set tw=80
 
+colorscheme carbonfox
 set termguicolors
 
 " gitgutter setup
@@ -88,13 +99,13 @@ highlight link GitGutterChangeLineNr DiffChange
 highlight link GitGutterDeleteLineNr DiffDelete
 highlight link GitGutterChangeDeleteLineNr DiffChange
 highlight DiffAdd ctermfg=lightgreen ctermbg=none
-highlight DiffChange ctermfg=blue ctermbg=none
+highlight DiffChange ctermfg=yellow ctermbg=none
 highlight DiffDelete ctermfg=red ctermbg=none
-highlight Visual ctermfg=None ctermbg=DarkRed guibg=white
+"highlight Visual ctermfg=None ctermbg=DarkRed guibg=white
 
 set colorcolumn=81,101,121
-highlight ColorColumn ctermbg=16
-hi MatchParen cterm=bold ctermbg=none ctermfg=red
+"highlight ColorColumn ctermbg=16
+"hi MatchParen cterm=bold ctermbg=none ctermfg=red
 
 set noswapfile
 set backupdir=~/.local/share/nvim/backup//
@@ -103,6 +114,8 @@ set backup
 
 nnoremap !d :AsyncRun alacritty&<CR>
 
+vnoremap <C-k> <Cmd>lua require("dapui").eval()<CR>
+
 augroup vimrc
 
     " Remove all vimrc autocommands
@@ -110,18 +123,18 @@ augroup vimrc
 
     " Track insert mode with a variable
 
-    autocmd BufWritePre *.py lua vim.lsp.buf.formatting_sync(nil, 1000)
-    autocmd BufWritePre *.py.in lua vim.lsp.buf.formatting_sync(nil, 1000)
+    autocmd BufWritePre *.py lua vim.lsp.buf.format(nil, 1000)
+    autocmd BufWritePre *.py.in lua vim.lsp.buf.format(nil, 1000)
 
-    autocmd BufWritePre *.go lua vim.lsp.buf.formatting_sync(nil, 1000)
-    autocmd BufWritePre *.rs lua vim.lsp.buf.formatting_sync(nil, 1000)
+    autocmd BufWritePre *.go lua vim.lsp.buf.format(nil, 1000)
+    autocmd BufWritePre *.rs lua vim.lsp.buf.format(nil, 1000)
 
 augroup END
 
-highlight IndentBlanklineChar ctermfg=gray cterm=nocombine
-highlight IndentBlanklineContextChar ctermfg=blue cterm=nocombine
+"highlight IndentBlanklineChar ctermfg=gray cterm=nocombine
+"highlight IndentBlanklineContextChar ctermfg=blue cterm=nocombine
 
-highlight Comment ctermfg=DarkGray cterm=nocombine
+"highlight Comment ctermfg=DarkGray cterm=nocombine
 
 lua << EOF
 
@@ -239,17 +252,17 @@ local on_attach = function(client, bufnr)
   vim.api.nvim_buf_set_keymap(bufnr, 'n', '<space>rn', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
   vim.api.nvim_buf_set_keymap(bufnr, 'n', '<space>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
   vim.api.nvim_buf_set_keymap(bufnr, 'n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
-  vim.api.nvim_buf_set_keymap(bufnr, 'n', '<space>f', '<cmd>lua vim.lsp.buf.formatting()<CR>', opts)
+  vim.api.nvim_buf_set_keymap(bufnr, 'n', '<space>f', '<cmd>lua vim.lsp.buf.format()<CR>', opts)
 
   client.config.flags.debounce_text_changes = 150
 end
 local lspconfig = require('lspconfig')
 
 -- Enable some language servers with the additional completion capabilities offered by nvim-cmp
-lspconfig.gopls.setup {
-    on_attach = on_attach,
-    capabilities = capabilities,
-}
+-- lspconfig.gopls.setup {
+--     on_attach = on_attach,
+--     capabilities = capabilities,
+-- }
 lspconfig.tsserver.setup {
     on_attach = on_attach,
     capabilities = capabilities,
@@ -460,4 +473,25 @@ require('lualine').setup {
   extensions = {}
 }
 
+require'nvim-treesitter.configs'.setup {
+    -- Modules and its options go here
+    highlight = { enable = true },
+    incremental_selection = { enable = true },
+    textobjects = { enable = true },
+}
+
+require("dapui").setup()
+require 'go'.setup({
+  goimport = 'gopls', -- if set to 'gopls' will use golsp format
+  gofmt = 'gopls', -- if set to gopls will use golsp format
+  max_line_len = 120,
+  tag_transform = false,
+  test_dir = '',
+  comment_placeholder = '   ',
+  lsp_cfg = true, -- false: use your own lspconfig
+  lsp_gofumpt = false, -- true: set default gofmt in gopls format to gofumpt
+  lsp_on_attach = true, -- use on_attach from go.nvim
+  dap_debug = true,
+})
 EOF
+
