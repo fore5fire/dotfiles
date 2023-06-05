@@ -86,7 +86,8 @@ set undofile
 set updatetime=100
 set mouse=a
 set scrolloff=100000
-set tw=80
+autocmd FileType md setlocal tw=80
+autocmd FileType txt setlocal tw=80
 
 colorscheme carbonfox
 set termguicolors
@@ -127,7 +128,11 @@ augroup vimrc
     autocmd BufWritePre *.py.in lua vim.lsp.buf.format(nil, 1000)
 
     autocmd BufWritePre *.go lua vim.lsp.buf.format(nil, 1000)
+
     autocmd BufWritePre *.rs lua vim.lsp.buf.format(nil, 1000)
+
+    autocmd BufWritePre *.tf lua vim.lsp.buf.format(nil, 1000)
+    autocmd BufWritePre *.tfvars lua vim.lsp.buf.format(nil, 1000)
 
 augroup END
 
@@ -288,6 +293,7 @@ lspconfig.rust_analyzer.setup {
         },
     },
 }
+lspconfig.terraformls.setup{}
 
 -- Setup indent-blankline
 vim.opt.list = true

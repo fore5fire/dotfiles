@@ -4,7 +4,6 @@ app-admin/terraform
 app-admin/vault
 app-containers/podman
 app-emulation/vagrant
-dev-go/gopls
 dev-python/pip
 dev-python/pynvim
 dev-python/setuptools-rust
