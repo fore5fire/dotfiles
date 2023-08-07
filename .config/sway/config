@@ -1,8 +1,11 @@
 # Default config for sway
 #
 # Copy this to ~/.config/sway/config and edit it to your liking.
-#
+
 # Read `man 5 sway` for a complete reference.
+
+# Lock on start after initial boot.
+exec ~/.config/sway/lock_unless_first_boot.sh
 
 ### Variables
 #
@@ -20,49 +23,73 @@ set $term alacritty
 # on the original workspace that the command was run on.
 #set $menu bemenu-run -i
 set $menu wofi --show drun -i --allow-images --allow-markup -G | xargs swaymsg exec --
-
+set $search_menu search=$(wofi --show dmenu -G) && firefox-bin --search "$search"
+set $url_menu url=$(wofi --show dmenu -G) && firefox-bin --new-window "$url"
 xwayland enable
 
 ### Display Configuration
 set $laptop_screen eDP-1
-output $laptop_screen scale 2
-
-#output $laptop_screen pos 1080 1150 res 2256x1504 
-# Position second monitor to the right and above, adjusting for laptop screen scale
-output 'Unknown VG27A M4LMQS014517' pos 1080 170 res 2560x1440
-output 'Dell Inc. DELL S2415H 5J1MP67306CL' pos 0 0 res 1920x1080 transform 270
-output 'Sharp Corporation 0x148D Unknown' scale 2
+output $laptop_screen {
+    pos 1080 1610 res scale 1.6
+    2256x1504
+}
+output 'Unknown VG27A M4LMQS014517'{
+    pos 1080 170 res 2560x1440
+}
+output 'Dell Inc. DELL S2415H 5J1MP67306CL' {
+    pos 0 0 res 1920x1080
+    transform 270
+}
+output 'Unknown Rokid Air 0x00000101' {
+    scale 1.6
+    bg #000000 solid_color
+}
 # VM displays
-output Virtual-2 res 2560x1440 pos 1080 170
-output Virtual-1 res 1920x1080 pos 0 0 transform 270
+output Virtual-2 {
+    res 2560x1440 pos 1080 170
+}
+output Virtual-1 {
+    res 1920x1080 pos 0 0 transform 270
+}
 ### Output configuration
 # Clamshell Mode
 bindswitch --reload --locked lid:on output $laptop_screen disable
 bindswitch --reload --locked lid:off output $laptop_screen enable
 exec_always ~/.config/sway/clamshell.sh
+# Enable and disable displays
+bindsym $mod+p output - disable
+bindsym $mod+Ctrl+p output $laptop_screen toggle
+bindsym $mod+Shift+p output * enable
 
-#
-# Default wallpaper (more resolutions are available in /usr/share/backgrounds/sway/)
-output * bg /usr/share/backgrounds/sway/Sway_Wallpaper_Blue_1920x1080.png fill
-#
 # Example configuration:
 #
 #   output HDMI-A-1 resolution 1920x1080 position 1920,0
 #
 # You can get the names of your outputs by running: swaymsg -t get_outputs
 
+# Launch GUI services
+exec mako
+exec /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
+# Required for Flatpak
+exec /usr/libexec/xdg-desktop-portal-gtk -r
+# Update env vars for xdg-desktop-portal-wlr
+exec --no-startup-id dbus-update-activation-environment --all
 ### Idle configuration
 
 set $swaylock swaylock -f
 exec swayidle -w \
-    timeout 110 'doas xbacklight -get | tee ~/.config/sway/backlight && doas xbacklight -set 1 -time 1000 -fps 30' \
-        resume 'doas xbacklight -set $(cat ~/.config/sway/backlight) -time 1000 -fps 30' \
+    timeout 110 'doas xbacklight -get | tee ~/.config/sway/backlight && doas xbacklight -set 1 -time 1000 -fps 60' \
+        resume 'doas xbacklight -set $(cat ~/.config/sway/backlight) -time 1000 -fps 60' \
     timeout 120 'swaymsg "output * dpms off"' \
         resume 'swaymsg "output * dpms on"' \
     timeout 130 'swaylock -f' \
-    timeout 600 'systemctl suspend'
-    #before-sleep 'swaylock -f'
-bindsym $mod+Shift+q exec $swaylock
+    timeout 600 'systemctl suspend' \
+    timeout 600 'test $(cat /sys/class/power_supply/ACAD/online) = 0 && doas acpitool --suspend'
+#    before-sleep 'swaylock -f'
+bindsym $mod+Alt+q exec $swaylock
+bindsym $mod+Shift+q exec sleep '0.25' && killall -SIGUSR1 swayidle
+
+smart_borders on
 
 # Pulse Audio controls
 bindsym XF86AudioRaiseVolume exec pactl set-sink-volume 0 +5% #increase sound volume
@@ -81,38 +108,45 @@ bindsym XF86AudioPrev exec playerctl previous
 
 ### Input configuration
 input "1:1:AT_Translated_Set_2_keyboard" {
-    #xkb_options ctrl:swap_lalt_lctl_lwin,altwin:swap_alt_win
+    xkb_options ctrl:swap_lalt_lctl,ctrl:swap_rwin_rctl,caps:swapescape
 }
 input "2362:628:PIXA3854:00_093A:0274_Touchpad" {
    dwt disabled
-   tap enabled
+   tap disabled
    natural_scroll enabled
    middle_emulation enabled
    click_method clickfinger
 }
+input "2:6:ImExPS/2_Generic_Explorer_Mouse" events disabled
+input "2362:628:PIXA3854:00_093A:0274_Mouse" events disabled
 
-input * repeat_delay 200
+input * repeat_delay 150
+input * repeat_rate 40
+
+for_window [app_id=".*"] focus
+assign [app_id="Alacritty"] workspace 1
+assign [app_id="firefox"] workspace 2
+assign [app_id=".*"] workspace 3
 
 #
 # You can get the names of your inputs by running: swaymsg -t get_inputs
 # Read `man 5 sway-input` for more information about this section.
-
-# Hide cursor when typing
-seat * hide_cursor when-typing enable
 
 ### Key bindings
 #
 # Basics:
 #
     # Start a terminal
-    bindsym $mod+Return exec $term
+    bindsym $mod+semicolon exec $term
+    bindsym $mod+colon exec $term
+    bindsym $mod+Return exec $term -e /bin/fish -i -C zi
+    bindsym $mod+apostrophe exec $term -e /bin/fish -i -C 'set startdir "$(fzf)"; cd "$(dirname $startdir)"; vi "$startdir"; set -e startdir'
 
     # Kill focused window
     bindsym $mod+d kill
 
     # Start your launcher
     bindsym $mod+z exec $menu
-    bindsym $mod+semicolon exec $term -e ranger
     # Drag floating windows by holding down $mod and left mouse button.
     # Resize them with right mouse button + $mod.
     # Despite the name, also works for non-floating windows.
@@ -122,6 +156,11 @@ seat * hide_cursor when-typing enable
 
     # Reload the configuration file
     bindsym $mod+Shift+c reload
+
+    # App shortcuts
+    #bindsym $mod+u exec $url_menu
+    bindsym $mod+t exec firefox-bin --new-window
+    bindsym $mod+Escape exec firefox-bin --new-instance
 #
 # Moving around:
 #
@@ -155,23 +194,23 @@ seat * hide_cursor when-typing enable
 # Workspaces:
 #
     # Switch to workspace
-    bindsym $mod+1 workspace number 1
-    bindsym $mod+2 workspace number 2
-    bindsym $mod+3 workspace number 3
-    bindsym $mod+4 workspace number 4
-    bindsym $mod+5 workspace number 5
-    bindsym $mod+6 workspace number 6
+    bindsym $mod+m workspace number 1
+    bindsym $mod+Comma workspace number 2
+    bindsym $mod+Period workspace number 3
+    bindsym $mod+u workspace number 4
+    bindsym $mod+i workspace number 5
+    bindsym $mod+o workspace number 6
     bindsym $mod+7 workspace number 7
     bindsym $mod+8 workspace number 8
     bindsym $mod+9 workspace number 9
     bindsym $mod+0 workspace number 10
     # Move focused container to workspace
-    bindsym $mod+Shift+1 move container to workspace number 1
-    bindsym $mod+Shift+2 move container to workspace number 2
-    bindsym $mod+Shift+3 move container to workspace number 3
-    bindsym $mod+Shift+4 move container to workspace number 4
-    bindsym $mod+Shift+5 move container to workspace number 5
-    bindsym $mod+Shift+6 move container to workspace number 6
+    bindsym $mod+Shift+m move container to workspace number 1
+    bindsym $mod+Shift+Comma move container to workspace number 2
+    bindsym $mod+Shift+Period move container to workspace number 3
+    bindsym $mod+Shift+u move container to workspace number 4
+    bindsym $mod+Shift+i move container to workspace number 5
+    bindsym $mod+Shift+o move container to workspace number 6
     bindsym $mod+Shift+7 move container to workspace number 7
     bindsym $mod+Shift+8 move container to workspace number 8
     bindsym $mod+Shift+9 move container to workspace number 9
@@ -216,6 +255,45 @@ seat * hide_cursor when-typing enable
     # Show the next scratchpad window or hide the focused scratchpad window.
     # If there are multiple scratchpad windows, this command cycles through them.
     bindsym $mod+minus scratchpad show
+
+#
+# Cursor
+#
+
+# Hide cursor when typing
+seat * hide_cursor when-typing enable
+
+mode "cursor" {
+    
+    bindsym space seat - cursor press button1
+    bindsym --release space seat - cursor release button1
+    bindsym n - cursor press button2
+    bindsym --release n seat - cursor release button2
+    bindsym s seat - cursor move -15 0
+    bindsym f seat - cursor move 15 0
+    bindsym d seat - cursor move 0 15
+    bindsym e seat - cursor move 0 -15
+    bindsym w seat - cursor move -15 -15
+    bindsym r seat - cursor move 15 -15
+    bindsym c seat - cursor move 15 15
+    bindsym x seat - cursor move -15 15
+    bindsym Shift+s seat - cursor move -5 0
+    bindsym Shift+f seat - cursor move 5 0
+    bindsym Shift+d seat - cursor move 0 5
+    bindsym Shift+e seat - cursor move 0 -5
+    bindsym Shift+w seat - cursor move -5 -5
+    bindsym Shift+r seat - cursor move 5 -5
+    bindsym Shift+c seat - cursor move 5 5
+    bindsym Shift+x seat - cursor move -5 5
+    bindsym k seat - cursor press button4
+    bindsym j seat - cursor press button5
+    bindsym h seat - cursor press button6
+    bindsym l seat - cursor press button7
+
+    bindsym Escape mode "default"; seat - hide_cursor when-typing enable; exec swaymsg input '*' repeat_delay 150
+}
+bindsym $mod+n mode "cursor"; seat - hide_cursor when-typing disable; exec swaymsg input '*' repeat_delay 50
+
 #
 # Resizing containers:
 #
@@ -243,13 +321,13 @@ mode "resize" {
 }
 bindsym $mod+r mode "resize"
 
-bindsym $mod+y resize set width 25
-bindsym $mod+o resize set width 75
-bindsym $mod+u resize set height 75
-bindsym $mod+i resize set height 25
+bindsym $mod+Shift+p resize set width 25
+bindsym $mod+p resize set width 75
+bindsym $mod+slash resize set height 75
+bindsym $mod+Shift+slash resize set height 25
 
 # Read `man 5 sway-bar` for more information about this section.
-bar {
+#bar {
     # position top
 
     # When the status_command prints a new line to stdout, swaybar updates.
@@ -257,34 +335,31 @@ bar {
     #status_command while date +'%Y-%m-%d %l:%M %p'; do sleep 2; done
     # mode hide
     # hide modifier $mod
-    swaybar_command waybar
+#    swaybar_command waybar
     # status_command i3status
     # colors {
     #     statusline #ffffff
     #     background #323232
     #     inactive_workspace #32323200 #32323200 #5c5c5c
     }
-}
+#}
 
-# Waybar
-#exec nm-applet --indicator
-#exec blueman-applet
-#bindsym $mod+x exec killall -USR1 waybar
-#exec_always sleep 1 && killall -USR1 waybar
+# Setup widgets
+# iwgtk requires user to be in group wheel or netdev
+exec iwgtk -i
+exec blueman-applet
 
-font pango:SourceCodePro Medium 7
+# Hide and show waybar
+# bindsym $mod+x exec killall -USR1 waybar
+# exec_always sleep 1 && killall -USR1 waybar
 
-# App shortcuts
-bindsym $mod+t exec qb
+# Start and kill waybar
+bindsym $mod+x exec killall waybar
+bindsym $mod+Shift+x exec waybar
 
+font pango:MononokiNerdFont Medium 8
 
-# Launch GUI services
-exec mako
-
+# Launch pipewire
 exec gentoo-pipewire-launcher &
-exec /usr/libexec/xdg-desktop-portal-gtk -r
-exec /usr/libexec/xdg-desktop-portal-wlr -r
-exec /usr/libexec/flatpak-portal -r
-exec "sh -c 'sleep 5;exec /usr/libexec/xdg-desktop-portal -r'"
 
 include local
