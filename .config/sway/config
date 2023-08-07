@@ -33,6 +33,8 @@ output $laptop_screen {
     pos 1080 1610 res scale 1.6
     2256x1504
 }
+# productive-gopher internal display
+output 'Sharp Corporation 0x148D Unknown' scale 2
 output 'Unknown VG27A M4LMQS014517'{
     pos 1080 170 res 2560x1440
 }
@@ -41,7 +43,7 @@ output 'Dell Inc. DELL S2415H 5J1MP67306CL' {
     transform 270
 }
 output 'Unknown Rokid Air 0x00000101' {
-    scale 1.6
+    scale 1.5
     bg #000000 solid_color
 }
 # VM displays
@@ -51,15 +53,19 @@ output Virtual-2 {
 output Virtual-1 {
     res 1920x1080 pos 0 0 transform 270
 }
+
+# VM displays
+output Virtual-2 res 2560x1440 pos 1080 170
+output Virtual-1 res 1920x1080 pos 0 0 transform 270
 ### Output configuration
 # Clamshell Mode
 bindswitch --reload --locked lid:on output $laptop_screen disable
 bindswitch --reload --locked lid:off output $laptop_screen enable
 exec_always ~/.config/sway/clamshell.sh
 # Enable and disable displays
-bindsym $mod+p output - disable
-bindsym $mod+Ctrl+p output $laptop_screen toggle
-bindsym $mod+Shift+p output * enable
+bindsym $mod+x output - disable
+bindsym $mod+Ctrl+x output $laptop_screen toggle
+bindsym $mod+Shift+x output * enable
 
 # Example configuration:
 #
@@ -112,13 +118,24 @@ input "1:1:AT_Translated_Set_2_keyboard" {
 }
 input "2362:628:PIXA3854:00_093A:0274_Touchpad" {
    dwt disabled
-   tap disabled
-   natural_scroll enabled
-   middle_emulation enabled
-   click_method clickfinger
 }
 input "2:6:ImExPS/2_Generic_Explorer_Mouse" events disabled
 input "2362:628:PIXA3854:00_093A:0274_Mouse" events disabled
+
+#input "1739:31251:SYNA2393:00_06CB:7A13_Mouse" events disabled
+input 12951:6505:ZSA_Moonlander_Mark_I {
+    dwt disabled
+}
+input * {
+    dwt enabled
+    tap disabled
+    natural_scroll enabled
+    scroll_method two_finger
+    middle_emulation enabled
+    click_method clickfinger
+    pointer_accel 0.5
+    repeat_delay 200
+}
 
 input * repeat_delay 150
 input * repeat_rate 40
@@ -185,11 +202,11 @@ assign [app_id=".*"] workspace 3
     bindsym $mod+Shift+$down move down
     bindsym $mod+Shift+$up move up
     bindsym $mod+Shift+$right move right
-    # Ditto, with arrow keys
-    bindsym $mod+Shift+Left move left
-    bindsym $mod+Shift+Down move down
-    bindsym $mod+Shift+Up move up
-    bindsym $mod+Shift+Right move right
+    # Move the focused workspace with arrow keys and shift
+    bindsym $mod+Shift+Left move workspace to output left
+    bindsym $mod+Shift+Down move workspace to output down
+    bindsym $mod+Shift+Up move workspace to output up
+    bindsym $mod+Shift+Right move workspace to output right
 #
 # Workspaces:
 #
@@ -348,14 +365,6 @@ bindsym $mod+Shift+slash resize set height 25
 # iwgtk requires user to be in group wheel or netdev
 exec iwgtk -i
 exec blueman-applet
-
-# Hide and show waybar
-# bindsym $mod+x exec killall -USR1 waybar
-# exec_always sleep 1 && killall -USR1 waybar
-
-# Start and kill waybar
-bindsym $mod+x exec killall waybar
-bindsym $mod+Shift+x exec waybar
 
 font pango:MononokiNerdFont Medium 8
 
