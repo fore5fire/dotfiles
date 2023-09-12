@@ -19,8 +19,8 @@ set $right l
 # Your preferred terminal emulator
 set $term alacritty
 # Your preferred application launcher
-# Note: pass the final command to swaymsg so that the resulting window can be opened
-# on the original workspace that the command was run on.
+# Note: pass the final command to swaymsg so that the resulting window can be
+# opened on the original workspace that the command was run on.
 #set $menu bemenu-run -i
 set $menu wofi --show drun -i --allow-images --allow-markup -G | xargs swaymsg exec --
 set $search_menu search=$(wofi --show dmenu -G) && firefox-bin --search "$search"
@@ -142,13 +142,9 @@ input * {
 input * repeat_delay 150
 input * repeat_rate 40
 
-for_window [app_id=".*"] move container to workspace 3, focus
-for_window [app_id="firefox"] move container workspace 2, focus
-for_window [app_id="Alacritty"] move container to workspace 1, focus
-
 #
-# You can get the names of your inputs by running: swaymsg -t get_inputs
-# Read `man 5 sway-input` for more information about this section.
+# You can get the names of your inputs by running: swaymsg -t get_inputs Read
+# `man 5 sway-input` for more information about this section.
 
 ### Key bindings
 #
@@ -212,16 +208,16 @@ for_window [app_id="Alacritty"] move container to workspace 1, focus
 # Workspaces:
 #
     # Switch to workspace
-    bindsym $mod+m workspace number 1, focus child
-    bindsym $mod+Comma workspace number 2, focus child
-    bindsym $mod+Period workspace number 3, focus child
-    bindsym $mod+u workspace number 4, focus child
-    bindsym $mod+i workspace number 5, focus child
-    bindsym $mod+o workspace number 6, focus child
-    bindsym $mod+7 workspace number 7, focus child
-    bindsym $mod+8 workspace number 8, focus child
-    bindsym $mod+9 workspace number 9, focus child
-    bindsym $mod+0 workspace number 10, focus child
+    bindsym $mod+m workspace number 1
+    bindsym $mod+Comma workspace number 2
+    bindsym $mod+Period workspace number 3
+    bindsym $mod+u workspace number 4
+    bindsym $mod+i workspace number 5
+    bindsym $mod+o workspace number 6
+    bindsym $mod+7 workspace number 7
+    bindsym $mod+8 workspace number 8
+    bindsym $mod+9 workspace number 9
+    bindsym $mod+0 workspace number 10
     # Move focused container to workspace
     bindsym $mod+Shift+m move container to workspace number 1
     bindsym $mod+Shift+Comma move container to workspace number 2
@@ -235,6 +231,27 @@ for_window [app_id="Alacritty"] move container to workspace 1, focus
     bindsym $mod+Shift+0 move container to workspace number 10
     # Note: workspaces can have any name you want, not just numbers.
     # We just use 1-10 as the default.
+
+    # Set default workspaces for windows
+    assign [app_id="Alacritty"] workspace 1
+    assign [app_id="firefox"] workspace 2
+    assign [app_id="Slack"] workspace 3
+    assign [app_id=".*"] workspace 4
+    for_window [app_id=".*"] focus
+
+    # Set default desktops for workspaces
+    workspace 1 output 'Dell Inc. DELL S2415H 5J1MP67306CL'
+    workspace 2 output 'ASUSTek COMPUTER INC VG27A M4LMQS014517'
+    workspace 3 output 'ASUSTek COMPUTER INC VG27A M4LMQS014517'
+    workspace 4 output 'ASUSTek COMPUTER INC VG27A M4LMQS014517'
+    workspace 5 output 'ASUSTek COMPUTER INC VG27A M4LMQS014517'
+    workspace 6 output 'Dell Inc. DELL S2415H 5J1MP67306CL'
+
+    # The container hopping bindings mess up the recorded last focused
+    # container when leaving the workspace, and using the workspace keybinds is
+    # a better habit anyways.
+    focus_wrapping workspace
+
 #
 # Layout stuff:
 #
@@ -270,8 +287,8 @@ for_window [app_id="Alacritty"] move container to workspace 1, focus
     # Move the currently focused window to the scratchpad
     bindsym $mod+Shift+minus move scratchpad
 
-    # Show the next scratchpad window or hide the focused scratchpad window.
-    # If there are multiple scratchpad windows, this command cycles through them.
+    # Show the next scratchpad window or hide the focused scratchpad window. If
+    # there are multiple scratchpad windows, this command cycles through them.
     bindsym $mod+minus scratchpad show
 
 #
