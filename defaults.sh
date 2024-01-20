@@ -3,6 +3,7 @@
 xdg-mime default org.qutebrowser.qutebrowser.desktop x-scheme-handler/http
 xdg-mime default org.qutebrowser.qutebrowser.desktop x-scheme-handler/https
 
+sudo rc-update add acpid default
 sudo rc-update add seatd default
 sudo rc-update add dhcpcd default
 sudo rc-update add iwd default

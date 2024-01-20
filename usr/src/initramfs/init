@@ -28,9 +28,11 @@ echo "unlocking encrypted swap partition"
 cryptsetup --tries 5 --allow-discards luksOpen /dev/nvme0n1p3 luksswap || rescue_shell
 echo "unlocked encrypted swap at /dev/mapper/luksswap"
 
-# Attempt to resume from hibernate.
-echo "attempting system resume"
-echo /dev/mapper/luksswap > /sys/power/resume || echo "resume failed, trying normal boot"
+# Attempt to resume from hibernate when try-resume=1 is passed.
+if [ $(cmdline try-resume) = 1 ]; then
+	echo "attempting system resume"
+	echo /dev/mapper/luksswap > /sys/power/resume || echo "resume failed, trying normal boot"
+fi
 
 # Decrypt the root filesystem.
 echo "unlocking encrypted root partition"
