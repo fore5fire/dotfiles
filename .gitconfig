@@ -1,0 +1,5 @@
+[user]
+	email = l@sturdyhippo.com
+	name = Landon Smith
+[commit]
+	gpgsign = true

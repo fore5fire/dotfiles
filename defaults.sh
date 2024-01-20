@@ -9,9 +9,6 @@ sudo rc-update add iwd default
 sudo rc-update add bluetooth default
 sudo rc-update add sysklogd default
 
-git config --global user.email "l@sturdyhippo.com"
-git config --global user.name "Landon Smith"
-
 // Install bass
 mkdir -p ~/src
 (cd ~/src; git clone https://github.com/edc/bass.git; cd bass; make install)
@@ -20,4 +17,4 @@ mkdir -p ~/src
 curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs \
        https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 
-sudo usermod -a -G pipewire -G netdev -G seat -G video -G audio -G seat l
+sudo usermod -a -G pipewire -G netdev -G seat -G video -G audio -G seat -G plugdev l
