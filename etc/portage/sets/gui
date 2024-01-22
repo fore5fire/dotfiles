@@ -12,7 +12,7 @@ media-fonts/fontawesome
 media-fonts/nerd-fonts
 media-fonts/noto
 media-fonts/noto-emoji
-media-gfx/cura
+#media-gfx/cura
 media-libs/mesa
 media-plugins/gst-plugins-libav
 media-sound/pavucontrol
@@ -27,6 +27,6 @@ sys-power/acpilight
 sys-power/acpitool
 sys-power/thermald
 www-client/firefox-bin
-www-client/qutebrowser
+#www-client/qutebrowser
 x11-terms/alacritty
 x11-themes/adwaita-icon-theme

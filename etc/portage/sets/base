@@ -1,8 +1,8 @@
 app-admin/doas
 app-admin/sysklogd
 app-crypt/sbsigntools
+app-crypt/gnupg
 app-eselect/eselect-repository
-app-portage/cpuid2cpuflags
 app-portage/eix
 app-portage/gentoolkit
 app-portage/mirrorselect

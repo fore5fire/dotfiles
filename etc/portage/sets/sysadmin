@@ -1,0 +1,5 @@
+sys-apps/hw-probe
+sys-kernel/modprobed-db
+sys-apps/i2ctools
+app-arch/deb2targz
+app-portage/cpuid2cpuflags
