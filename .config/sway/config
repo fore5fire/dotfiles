@@ -241,8 +241,8 @@ input * repeat_rate 40
     # Set default workspaces for windows
     assign [app_id="Alacritty"] workspace 1
     assign [app_id="firefox"] workspace 1
-    assign [app_id="Chromium"] workspace 3
-    assign [app_id=".*"] workspace 4
+    assign [app_id="Chromium"] workspace 4
+    assign [app_id=".*"] workspace 2
     for_window [app_id="Alacritty"] move window to mark term; mark term
     for_window [app_id="firefox"] move window to mark web; mark web
     for_window [app_id=".*"] focus
@@ -250,10 +250,10 @@ input * repeat_rate 40
     # Set default desktops for workspaces
     workspace 1 output 'Samsung Electric Company SAMSUNG 0x01000E00'
     workspace 2 output 'Samsung Electric Company SAMSUNG 0x01000E00'
-    workspace 3 output 'Samsung Electric Company SAMSUNG 0x01000E00'
-    workspace 4 output 'Samsung Electric Company SAMSUNG 0x01000E00'
-    workspace 5 output 'Samsung Electric Company SAMSUNG 0x01000E00'
-    workspace 6 output 'Dell Inc. DELL S2415H 5J1MP67306CL'
+    workspace 3 output 'ViewSonic Corporation VX3276-QHD V9W232481741'
+    workspace 4 output 'ViewSonic Corporation VX3276-QHD V9W232481741'
+    workspace 5 output 'ViewSonic Corporation VX3276-QHD V9W232481740'
+    workspace 6 output 'ViewSonic Corporation VX3276-QHD V9W232481740'
     #workspace 2 output 'ASUSTek COMPUTER INC VG27A M4LMQS014517'
     #workspace 3 output 'ASUSTek COMPUTER INC VG27A M4LMQS014517'
     #workspace 4 output 'ASUSTek COMPUTER INC VG27A M4LMQS014517'
@@ -264,7 +264,6 @@ input * repeat_rate 40
     # container when leaving the workspace, and using the workspace keybinds is
     # a better habit anyways.
     focus_wrapping workspace
-    default_orientation vertical
 
 #
 # Layout stuff:
