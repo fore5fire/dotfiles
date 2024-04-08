@@ -9,6 +9,7 @@ dev-python/pynvim
 dev-python/setuptools-rust
 dev-util/github-cli
 dev-util/rustup
+dev-util/xxd
 dev-vcs/git
 sys-cluster/kubectl
 sys-fs/squashfs-tools-ng

@@ -17,7 +17,7 @@ set $down j
 set $up k
 set $right l
 # Your preferred terminal emulator
-set $term alacritty
+set $term foot
 # Your preferred application launcher
 # Note: pass the final command to swaymsg so that the resulting window can be
 # opened on the original workspace that the command was run on.
@@ -48,14 +48,22 @@ output 'LBT Rokid Air 0x00000101' {
 }
 output 'Samsung Electric Company SAMSUNG 0x01000E00' {
     res 3840x2160@60hz
+    scale 1.2
 }
-
 # VM displays
 output Virtual-2 {
     res 2560x1440 pos 1080 170
 }
 output Virtual-1 {
     res 1920x1080 pos 0 0 transform 270
+}
+output 'ViewSonic Corporation VX3276-QHD V9W232481740' {
+    res 2560x1440
+    scale 1.25
+}
+output 'ViewSonic Corporation VX3276-QHD V9W232481741' {
+    res 2560x1440
+    scale 1.25
 }
 
 # VM displays
@@ -86,17 +94,25 @@ exec /usr/libexec/xdg-desktop-portal-gtk -r
 exec --no-startup-id dbus-update-activation-environment --all
 # Screenshot
 bindsym Print exec grim screenshot.png
-
 ### Idle configuration
+
 set $swaylock swaylock -f
-exec sway-audio-idle-inhibit
 exec swayidle -w \
-    timeout 130 'doas xbacklight -get | tee ~/.config/sway/backlight && doas xbacklight -set 1 -time 1000 -fps 60' \
+    timeout 110 'doas xbacklight -get | tee ~/.config/sway/backlight && doas xbacklight -set 1 -time 1000 -fps 60' \
         resume 'doas xbacklight -set $(cat ~/.config/sway/backlight) -time 1000 -fps 60' \
-    timeout 150 'swaymsg "output * dpms off"' \
+    timeout 120 'swaymsg "output * dpms off"' \
         resume 'swaymsg "output * dpms on"' \
-    timeout 300 'doas hibernate'
+    timeout 130 'swaylock -f' \
+    timeout 600 'test $(cat /sys/class/power_supply/ACAD/online) = 0 && doas acpitool --suspend'
+#    before-sleep 'swaylock -f'
 bindsym $mod+Shift+q exec $swaylock
+
+bindsym $mod+Backspace inhibit_idle open; title_format %title 👁️
+bindsym $mod+Alt+Backspace inhibit_idle focus; title_format %title 👁️ (focus)
+bindsym $mod+Ctrl+Backspace inhibit_idle visible; title_format %title 👁️ (visible)
+bindsym $mod+Shift+Backspace inhibit_idle none; title_format %title
+
+for_window [all] inhibit_idle fullscreen
 
 smart_borders on
 
@@ -106,8 +122,8 @@ bindsym XF86AudioLowerVolume exec pactl set-sink-volume 0 -5% #decrease sound vo
 bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute 0 toggle # mute sound
 
 # Sreen brightness controls
-bindsym XF86MonBrightnessUp exec doas xbacklight -inc 3 # increase screen brightness
-bindsym XF86MonBrightnessDown exec doas xbacklight -dec 3 # decrease screen brightness
+bindsym XF86MonBrightnessUp exec doas xbacklight -inc 2 -perceived # increase screen brightness
+bindsym XF86MonBrightnessDown exec doas xbacklight -dec 2 -perceived # decrease screen brightness
 
 # Media player controls
 bindsym XF86AudioPlay exec playerctl play-pause
@@ -156,7 +172,6 @@ input * repeat_rate 40
     bindsym $mod+colon exec $term
     bindsym $mod+Return exec $term -e /bin/fish -i -C zi
     bindsym $mod+apostrophe exec $term -e /bin/fish -i -C 'set startdir "$(fzf)"; cd "$(dirname $startdir)"; vi "$startdir"; set -e startdir'
-    bindsym $mod+Shift+colon mark --add --toggle term
 
     # Kill focused window
     bindsym $mod+d kill
@@ -177,14 +192,10 @@ input * repeat_rate 40
     #bindsym $mod+u exec $url_menu
     bindsym $mod+t exec firefox-bin --new-window
     bindsym $mod+Escape exec firefox-bin --new-instance
-    bindsym $mod+Shift+t mark --add --toggle web
 #
 # Moving around:
 #
     workspace_layout tabbed
-
-    # Split out a window;
-    bindsym $mod+s move up; move right;
 
     # Move your focus around
     bindsym $mod+$left focus parent; focus left sibling; focus child
@@ -240,12 +251,14 @@ input * repeat_rate 40
 
     # Set default workspaces for windows
     assign [app_id="Alacritty"] workspace 1
+    assign [app_id="foot"] workspace 1
     assign [app_id="firefox"] workspace 1
-    assign [app_id="Chromium"] workspace 4
+    assign [app_id="Slack"] workspace 3
+    assign [app_id="Chromium"] workspace 3
     assign [app_id=".*"] workspace 2
     for_window [app_id="Alacritty"] move window to mark term; mark term
     for_window [app_id="firefox"] move window to mark web; mark web
-    for_window [app_id=".*"] focus
+    for_window [all] focus
 
     # Set default desktops for workspaces
     workspace 1 output 'Samsung Electric Company SAMSUNG 0x01000E00'
@@ -254,11 +267,6 @@ input * repeat_rate 40
     workspace 4 output 'ViewSonic Corporation VX3276-QHD V9W232481741'
     workspace 5 output 'ViewSonic Corporation VX3276-QHD V9W232481740'
     workspace 6 output 'ViewSonic Corporation VX3276-QHD V9W232481740'
-    #workspace 2 output 'ASUSTek COMPUTER INC VG27A M4LMQS014517'
-    #workspace 3 output 'ASUSTek COMPUTER INC VG27A M4LMQS014517'
-    #workspace 4 output 'ASUSTek COMPUTER INC VG27A M4LMQS014517'
-    #workspace 5 output 'ASUSTek COMPUTER INC VG27A M4LMQS014517'
-    #workspace 6 output 'Dell Inc. DELL S2415H 5J1MP67306CL'
 
     # Gaps for rokid air
     #gaps left 500
