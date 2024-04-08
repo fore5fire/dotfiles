@@ -17,7 +17,7 @@ set $down j
 set $up k
 set $right l
 # Your preferred terminal emulator
-set $term foot
+set $term Alacritty
 # Your preferred application launcher
 # Note: pass the final command to swaymsg so that the resulting window can be
 # opened on the original workspace that the command was run on.
@@ -168,10 +168,10 @@ input * repeat_rate 40
 # Basics:
 #
     # Start a terminal
-    bindsym $mod+semicolon exec $term
-    bindsym $mod+colon exec $term
-    bindsym $mod+Return exec $term -e /bin/fish -i -C zi
-    bindsym $mod+apostrophe exec $term -e /bin/fish -i -C 'set startdir "$(fzf)"; cd "$(dirname $startdir)"; vi "$startdir"; set -e startdir'
+    bindsym $mod+semicolon [app_id="Alacritty|foot" workspace="1"] mark term; exec $term
+    bindsym $mod+colon [app_id="Alacritty|foot" workspace="1"] mark term; exec $term
+    bindsym $mod+Return [app_id="Alacritty|foot" workspace="1"] mark term; exec $term -e /bin/fish -i -C zi
+    bindsym $mod+apostrophe [app_id="Alacritty|foot" workspace="1"] mark term; exec $term -e /bin/fish -i -C 'set startdir "$(fzf)"; cd "$(dirname $startdir)"; vi "$startdir"; set -e startdir'
 
     # Kill focused window
     bindsym $mod+d kill
@@ -190,26 +190,26 @@ input * repeat_rate 40
 
     # App shortcuts
     #bindsym $mod+u exec $url_menu
-    bindsym $mod+t exec firefox-bin --new-window
-    bindsym $mod+Escape exec firefox-bin --new-instance
+    bindsym $mod+t [app_id="firefox" workspace="1"] mark web; exec firefox-bin --new-window
+    bindsym $mod+Escape [app_id="firefox" workspace="1"] mark web; exec firefox-bin --new-instance
 #
 # Moving around:
 #
     workspace_layout tabbed
 
     # Move your focus around
-    bindsym $mod+$left focus parent; focus left sibling; focus child
-    bindsym $mod+$down focus parent; focus down sibling; focus child
-    bindsym $mod+$up focus parent; focus up sibling; focus child
-    bindsym $mod+$right focus parent; focus right sibling; focus child
+    bindsym $mod+$left focus left
+    bindsym $mod+$down focus down
+    bindsym $mod+$up focus up
+    bindsym $mod+$right focus right
     # Or use $mod+[up|down|left|right]
     bindsym $mod+Left focus left
     bindsym $mod+Down focus down
     bindsym $mod+Up focus up
     bindsym $mod+Right focus right
 
-    bindsym $mod+Tab focus next
-    bindsym $mod+Shift+Tab focus prev
+    bindsym $mod+Tab focus parent; focus next sibling; focus child; focus child; focus child; focus child
+    bindsym $mod+Shift+Tab focus parent; focus prev sibling; focus child; focus child; focus child; focus child
 
     # Move the focused window with the same, but add Shift
     bindsym $mod+Shift+$left move left
@@ -250,14 +250,13 @@ input * repeat_rate 40
     # We just use 1-10 as the default.
 
     # Set default workspaces for windows
-    assign [app_id="Alacritty"] workspace 1
-    assign [app_id="foot"] workspace 1
+    assign [app_id="Alacritty|foot"] workspace 1
     assign [app_id="firefox"] workspace 1
     assign [app_id="Slack"] workspace 3
     assign [app_id="Chromium"] workspace 3
-    assign [app_id=".*"] workspace 2
-    for_window [app_id="Alacritty"] move window to mark term; mark term
-    for_window [app_id="firefox"] move window to mark web; mark web
+    assign [all] workspace 2
+    for_window [app_id="Alacritty|foot"] move window to mark term; [con_mark="term"] unmark term
+    for_window [app_id="firefox"] move window to mark web; [con_mark="web"] unmark web
     for_window [all] focus
 
     # Set default desktops for workspaces
