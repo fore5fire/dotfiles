@@ -3,6 +3,7 @@ app-admin/sysklogd
 app-crypt/sbsigntools
 app-crypt/gnupg
 app-eselect/eselect-repository
+app-misc/jq
 app-portage/eix
 app-portage/gentoolkit
 app-portage/mirrorselect

@@ -32,3 +32,6 @@ sudo efibootmgr  --create --disk /dev/nvme0n1 --part 1 --label "gentoo resume" -
 
 # Upload hardware probe
 hw-probe -all -upload
+
+
+# For wg-quick don't forget to enable CONFIG_NF_CONNTRACK_MARK and some other nftables flags
