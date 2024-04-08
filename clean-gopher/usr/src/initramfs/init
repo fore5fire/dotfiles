@@ -23,14 +23,22 @@ rescue_shell() {
 # disable kernel messages from popping onto the screen.
 echo 0 > /proc/sys/kernel/printk
 
+# Decrypt the swap partition.
+echo "unlocking encrypted swap partition"
+cryptsetup --tries 5 --allow-discards luksOpen /dev/nvme0n1p3 luksswap || rescue_shell
+echo "unlocked encrypted swap at /dev/mapper/luksswap"
+
 # Decrypt the root filesystem.
-cryptsetup --tries 5 --allow-discards luksOpen "$(findfs $(cmdline luksdisk))" luksroot || rescue_shell
+echo "unlocking encrypted root partition"
+cryptsetup --tries 5 --allow-discards luksOpen /dev/nvme0n1p2 luksroot || rescue_shell
+echo "unlocked encrypted root at /dev/mapper/luksroot"
 
 # re-enable kernel messages.
 echo 1 > /proc/sys/kernel/printk
 
 # Mount the root filesystem.
-mount -o "$(cmdline rootflags)" /dev/mapper/luksroot /mnt/root || rescue_shell
+mount -o compress=zstd,subvol=@root /dev/mapper/luksroot /mnt/root || rescue_shell
+echo "mounted root filesystem"
 
 # Clean up.
 umount /proc
@@ -38,5 +46,6 @@ umount /sys
 umount /dev
 
 # Boot the real thing.
-exec switch_root /mnt/root /sbin/init
+echo "starting /sbin/init..."
+exec switch_root /mnt/root /sbin/init || rescue_shell
 

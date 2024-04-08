@@ -41,7 +41,7 @@ if status is-interactive
     alias es="source ~/.zshrc"
     alias ec="$EDITOR ~/.zshrc"
     alias uuid="uuidgen | tr '[:upper:]' '[:lower:]'"
-    alias ls="exa"
+    alias ls="eza"
     alias v="vi"
 
 

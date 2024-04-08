@@ -46,6 +46,10 @@ output 'LBT Rokid Air 0x00000101' {
     scale 1.1
     bg #000000 solid_color
 }
+output 'Samsung Electric Company SAMSUNG 0x01000E00' {
+    res 3840x2160@60hz
+}
+
 # VM displays
 output Virtual-2 {
     res 2560x1440 pos 1080 170
@@ -82,20 +86,17 @@ exec /usr/libexec/xdg-desktop-portal-gtk -r
 exec --no-startup-id dbus-update-activation-environment --all
 # Screenshot
 bindsym Print exec grim screenshot.png
-### Idle configuration
 
+### Idle configuration
 set $swaylock swaylock -f
+exec sway-audio-idle-inhibit
 exec swayidle -w \
-    timeout 110 'doas xbacklight -get | tee ~/.config/sway/backlight && doas xbacklight -set 1 -time 1000 -fps 60' \
+    timeout 130 'doas xbacklight -get | tee ~/.config/sway/backlight && doas xbacklight -set 1 -time 1000 -fps 60' \
         resume 'doas xbacklight -set $(cat ~/.config/sway/backlight) -time 1000 -fps 60' \
-    timeout 120 'swaymsg "output * dpms off"' \
+    timeout 150 'swaymsg "output * dpms off"' \
         resume 'swaymsg "output * dpms on"' \
-    timeout 130 'swaylock -f' \
-    timeout 600 'systemctl suspend' \
-    timeout 600 'test $(cat /sys/class/power_supply/ACAD/online) = 0 && doas acpitool --suspend'
-#    before-sleep 'swaylock -f'
-bindsym $mod+Alt+q exec $swaylock
-bindsym $mod+Shift+q exec sleep '0.25' && killall -SIGUSR1 swayidle
+    timeout 300 'doas hibernate'
+bindsym $mod+Shift+q exec $swaylock
 
 smart_borders on
 
@@ -105,8 +106,8 @@ bindsym XF86AudioLowerVolume exec pactl set-sink-volume 0 -5% #decrease sound vo
 bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute 0 toggle # mute sound
 
 # Sreen brightness controls
-bindsym XF86MonBrightnessUp exec doas xbacklight -inc 2 -perceived # increase screen brightness
-bindsym XF86MonBrightnessDown exec doas xbacklight -dec 2 -perceived # decrease screen brightness
+bindsym XF86MonBrightnessUp exec doas xbacklight -inc 3 # increase screen brightness
+bindsym XF86MonBrightnessDown exec doas xbacklight -dec 3 # decrease screen brightness
 
 # Media player controls
 bindsym XF86AudioPlay exec playerctl play-pause
@@ -155,6 +156,7 @@ input * repeat_rate 40
     bindsym $mod+colon exec $term
     bindsym $mod+Return exec $term -e /bin/fish -i -C zi
     bindsym $mod+apostrophe exec $term -e /bin/fish -i -C 'set startdir "$(fzf)"; cd "$(dirname $startdir)"; vi "$startdir"; set -e startdir'
+    bindsym $mod+Shift+colon mark --add --toggle term
 
     # Kill focused window
     bindsym $mod+d kill
@@ -175,16 +177,20 @@ input * repeat_rate 40
     #bindsym $mod+u exec $url_menu
     bindsym $mod+t exec firefox-bin --new-window
     bindsym $mod+Escape exec firefox-bin --new-instance
+    bindsym $mod+Shift+t mark --add --toggle web
 #
 # Moving around:
 #
     workspace_layout tabbed
 
+    # Split out a window;
+    bindsym $mod+s move up; move right;
+
     # Move your focus around
-    bindsym $mod+$left focus parent, focus left sibling, focus child
-    bindsym $mod+$down focus parent, focus down sibling, focus child
-    bindsym $mod+$up focus parent, focus up sibling, focus child
-    bindsym $mod+$right focus parent, focus right sibling, focus child
+    bindsym $mod+$left focus parent; focus left sibling; focus child
+    bindsym $mod+$down focus parent; focus down sibling; focus child
+    bindsym $mod+$up focus parent; focus up sibling; focus child
+    bindsym $mod+$right focus parent; focus right sibling; focus child
     # Or use $mod+[up|down|left|right]
     bindsym $mod+Left focus left
     bindsym $mod+Down focus down
@@ -234,18 +240,25 @@ input * repeat_rate 40
 
     # Set default workspaces for windows
     assign [app_id="Alacritty"] workspace 1
-    assign [app_id="firefox"] workspace 2
-    assign [app_id="Slack"] workspace 3
-    assign [app_id=".*"] workspace 4
+    assign [app_id="firefox"] workspace 1
+    assign [app_id="Chromium"] workspace 4
+    assign [app_id=".*"] workspace 2
+    for_window [app_id="Alacritty"] move window to mark term; mark term
+    for_window [app_id="firefox"] move window to mark web; mark web
     for_window [app_id=".*"] focus
 
     # Set default desktops for workspaces
-    workspace 1 output 'Dell Inc. DELL S2415H 5J1MP67306CL'
-    workspace 2 output 'ASUSTek COMPUTER INC VG27A M4LMQS014517'
-    workspace 3 output 'ASUSTek COMPUTER INC VG27A M4LMQS014517'
-    workspace 4 output 'ASUSTek COMPUTER INC VG27A M4LMQS014517'
-    workspace 5 output 'ASUSTek COMPUTER INC VG27A M4LMQS014517'
-    workspace 6 output 'Dell Inc. DELL S2415H 5J1MP67306CL'
+    workspace 1 output 'Samsung Electric Company SAMSUNG 0x01000E00'
+    workspace 2 output 'Samsung Electric Company SAMSUNG 0x01000E00'
+    workspace 3 output 'ViewSonic Corporation VX3276-QHD V9W232481741'
+    workspace 4 output 'ViewSonic Corporation VX3276-QHD V9W232481741'
+    workspace 5 output 'ViewSonic Corporation VX3276-QHD V9W232481740'
+    workspace 6 output 'ViewSonic Corporation VX3276-QHD V9W232481740'
+    #workspace 2 output 'ASUSTek COMPUTER INC VG27A M4LMQS014517'
+    #workspace 3 output 'ASUSTek COMPUTER INC VG27A M4LMQS014517'
+    #workspace 4 output 'ASUSTek COMPUTER INC VG27A M4LMQS014517'
+    #workspace 5 output 'ASUSTek COMPUTER INC VG27A M4LMQS014517'
+    #workspace 6 output 'Dell Inc. DELL S2415H 5J1MP67306CL'
 
     # Gaps for rokid air
     #gaps left 500
@@ -263,11 +276,12 @@ input * repeat_rate 40
     # You can "split" the current object of your focus with
     # $mod+b or $mod+v, for horizontal and vertical splits
     # respectively.
-    bindsym $mod+b splith
-    bindsym $mod+v splitv
+    bindsym $mod+b split horizontal
+    bindsym $mod+v split vertical
+    bindsym $mod+n split toggle
+    bindsym $mod+Shift+n split none
 
     # Switch the current container between different layout styles
-    bindsym $mod+s layout stacking
     bindsym $mod+w layout tabbed
     bindsym $mod+e layout toggle split
 
@@ -303,36 +317,36 @@ input * repeat_rate 40
 # Hide cursor when typing
 seat * hide_cursor when-typing enable
 
-mode "cursor" {
-    
-    bindsym space seat - cursor press button1
-    bindsym --release space seat - cursor release button1
-    bindsym n - cursor press button2
-    bindsym --release n seat - cursor release button2
-    bindsym s seat - cursor move -15 0
-    bindsym f seat - cursor move 15 0
-    bindsym d seat - cursor move 0 15
-    bindsym e seat - cursor move 0 -15
-    bindsym w seat - cursor move -15 -15
-    bindsym r seat - cursor move 15 -15
-    bindsym c seat - cursor move 15 15
-    bindsym x seat - cursor move -15 15
-    bindsym Shift+s seat - cursor move -5 0
-    bindsym Shift+f seat - cursor move 5 0
-    bindsym Shift+d seat - cursor move 0 5
-    bindsym Shift+e seat - cursor move 0 -5
-    bindsym Shift+w seat - cursor move -5 -5
-    bindsym Shift+r seat - cursor move 5 -5
-    bindsym Shift+c seat - cursor move 5 5
-    bindsym Shift+x seat - cursor move -5 5
-    bindsym k seat - cursor press button4
-    bindsym j seat - cursor press button5
-    bindsym h seat - cursor press button6
-    bindsym l seat - cursor press button7
-
-    bindsym Escape mode "default"; seat - hide_cursor when-typing enable; exec swaymsg input '*' repeat_delay 150
-}
-bindsym $mod+n mode "cursor"; seat - hide_cursor when-typing disable; exec swaymsg input '*' repeat_delay 50
+#mode "cursor" {
+#    
+#    bindsym space seat - cursor press button1
+#    bindsym --release space seat - cursor release button1
+#    bindsym n - cursor press button2
+#    bindsym --release n seat - cursor release button2
+#    bindsym s seat - cursor move -15 0
+#    bindsym f seat - cursor move 15 0
+#    bindsym d seat - cursor move 0 15
+#    bindsym e seat - cursor move 0 -15
+#    bindsym w seat - cursor move -15 -15
+#    bindsym r seat - cursor move 15 -15
+#    bindsym c seat - cursor move 15 15
+#    bindsym x seat - cursor move -15 15
+#    bindsym Shift+s seat - cursor move -5 0
+#    bindsym Shift+f seat - cursor move 5 0
+#    bindsym Shift+d seat - cursor move 0 5
+#    bindsym Shift+e seat - cursor move 0 -5
+#    bindsym Shift+w seat - cursor move -5 -5
+#    bindsym Shift+r seat - cursor move 5 -5
+#    bindsym Shift+c seat - cursor move 5 5
+#    bindsym Shift+x seat - cursor move -5 5
+#    bindsym k seat - cursor press button4
+#    bindsym j seat - cursor press button5
+#    bindsym h seat - cursor press button6
+#    bindsym l seat - cursor press button7
+#
+#    bindsym Escape mode "default"; seat - hide_cursor when-typing enable; exec swaymsg input '*' repeat_delay 150
+#}
+# bindsym $mod+n mode "cursor"; seat - hide_cursor when-typing disable; exec swaymsg input '*' repeat_delay 50
 
 #
 # Resizing containers:
