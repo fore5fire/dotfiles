@@ -17,7 +17,7 @@ set $down j
 set $up k
 set $right l
 # Your preferred terminal emulator
-set $term Alacritty
+set $term foot
 # Your preferred application launcher
 # Note: pass the final command to swaymsg so that the resulting window can be
 # opened on the original workspace that the command was run on.
@@ -107,12 +107,14 @@ exec swayidle -w \
 #    before-sleep 'swaylock -f'
 bindsym $mod+Shift+q exec $swaylock
 
-bindsym $mod+Backspace inhibit_idle open; title_format %title 👁️
-bindsym $mod+Alt+Backspace inhibit_idle focus; title_format %title 👁️ (focus)
-bindsym $mod+Ctrl+Backspace inhibit_idle visible; title_format %title 👁️ (visible)
+bindsym $mod+Backspace inhibit_idle open; title_format 👁️ %title
+bindsym $mod+Alt+Backspace inhibit_idle focus; title_format 👁️f %title
+bindsym $mod+Ctrl+Backspace inhibit_idle visible; title_format 👁️v %title
 bindsym $mod+Shift+Backspace inhibit_idle none; title_format %title
 
 for_window [all] inhibit_idle fullscreen
+
+exec sway-audio-idle-inhibit
 
 smart_borders on
 
@@ -159,6 +161,8 @@ input * {
 input * repeat_delay 150
 input * repeat_rate 40
 
+mouse_warping container
+
 #
 # You can get the names of your inputs by running: swaymsg -t get_inputs Read
 # `man 5 sway-input` for more information about this section.
@@ -168,16 +172,16 @@ input * repeat_rate 40
 # Basics:
 #
     # Start a terminal
-    bindsym $mod+semicolon [app_id="Alacritty|foot" workspace="1"] mark term; exec $term
-    bindsym $mod+colon [app_id="Alacritty|foot" workspace="1"] mark term; exec $term
-    bindsym $mod+Return [app_id="Alacritty|foot" workspace="1"] mark term; exec $term -e /bin/fish -i -C zi
-    bindsym $mod+apostrophe [app_id="Alacritty|foot" workspace="1"] mark term; exec $term -e /bin/fish -i -C 'set startdir "$(fzf)"; cd "$(dirname $startdir)"; vi "$startdir"; set -e startdir'
+    bindsym $mod+semicolon [app_id="Alacritty|foot" workspace="1"] mark _term; [app_id="Alacritty|foot" con_id="__focused__"] mark _term; exec $term
+    bindsym $mod+colon [app_id="Alacritty|foot" workspace="1"] mark _term; [app_id="Alacritty|foot" con_id="__focused__"] mark _term; exec $term
+    bindsym $mod+Return [app_id="Alacritty|foot" workspace="1"] mark _term; [app_id="Alacritty|foot" con_id="__focused__"] mark _term; exec $term -e /bin/fish -i -C zi
+    bindsym $mod+apostrophe [app_id="Alacritty|foot" workspace="1"] mark _term; [app_id="Alacritty|foot" con_id="__focused__"] mark _term; exec $term -e /bin/fish -i -C 'set startdir "$(fzf)"; cd "$(dirname $startdir)"; vi "$startdir"; set -e startdir'
 
     # Kill focused window
-    bindsym $mod+d kill
+    bindsym $mod+d kill; [app_id="firefox" workspace="1"] mark _web; [app_id="firefox" con_id="__focused__"] mark _web; [app_id="Alacritty|foot" workspace="1"] mark _term; [app_id="Alacritty|foot" con_id="__focused__"] mark _term
 
     # Start your launcher
-    bindsym $mod+z exec $menu
+    bindsym $mod+z [app_id="firefox" workspace="1"] mark _web; [app_id="firefox" con_id="__focused__"] mark _web; [app_id="Alacritty|foot" workspace="1"] mark _term; [app_id="Alacritty|foot" con_id="__focused__"] mark _term; exec $menu
     # Drag floating windows by holding down $mod and left mouse button.
     # Resize them with right mouse button + $mod.
     # Despite the name, also works for non-floating windows.
@@ -190,8 +194,8 @@ input * repeat_rate 40
 
     # App shortcuts
     #bindsym $mod+u exec $url_menu
-    bindsym $mod+t [app_id="firefox" workspace="1"] mark web; exec firefox-bin --new-window
-    bindsym $mod+Escape [app_id="firefox" workspace="1"] mark web; exec firefox-bin --new-instance
+    bindsym $mod+t [app_id="firefox" workspace="1"] mark _web; [app_id="firefox" con_id="__focused__"] mark _web; exec firefox-bin --new-window
+    bindsym $mod+Escape [app_id="firefox" workspace="1"] mark _web; [app_id="firefox" con_id="__focused__"] mark _web; exec firefox-bin --new-instance
 #
 # Moving around:
 #
@@ -208,8 +212,9 @@ input * repeat_rate 40
     bindsym $mod+Up focus up
     bindsym $mod+Right focus right
 
-    bindsym $mod+Tab focus parent; focus next sibling; focus child; focus child; focus child; focus child
-    bindsym $mod+Shift+Tab focus parent; focus prev sibling; focus child; focus child; focus child; focus child
+    # Focus the next/previous top-level sibling (works up to 7 levels of nesting)
+    bindsym $mod+Tab focus parent; focus parent; focus parent; focus parent; focus parent; focus parent; focus parent; focus parent; focus parent; focus child; focus child; focus next sibling; focus child; focus child; focus child; focus child; focus child; focus child; focus child
+    bindsym $mod+Shift+Tab focus parent; focus parent; focus parent; focus parent; focus parent; focus parent; focus parent; focus parent; focus parent; focus child; focus child; focus prev sibling; focus child; focus child; focus child; focus child; focus child; focus child; focus child
 
     # Move the focused window with the same, but add Shift
     bindsym $mod+Shift+$left move left
@@ -255,8 +260,8 @@ input * repeat_rate 40
     assign [app_id="Slack"] workspace 3
     assign [app_id="Chromium"] workspace 3
     assign [all] workspace 2
-    for_window [app_id="Alacritty|foot"] move window to mark term; [con_mark="term"] unmark term
-    for_window [app_id="firefox"] move window to mark web; [con_mark="web"] unmark web
+    for_window [app_id="Alacritty|foot"] move window to mark _term
+    for_window [app_id="firefox"] move window to mark _web
     for_window [all] focus
 
     # Set default desktops for workspaces
