@@ -29,41 +29,53 @@ xwayland enable
 
 ### Display Configuration
 set $laptop_screen eDP-1
+set $wallpapers_path $HOME/.wallpapers
 output $laptop_screen {
     pos 1080 1610 res scale 1.6
     2256x1504
 }
 # productive-gopher internal display
-output 'Sharp Corporation 0x148D Unknown' scale 2
+output 'Sharp Corporation 0x148D Unknown' {
+    scale 2
+    background `find $wallpapers_path -type f | shuf -n 1` fill
+}
 output 'Unknown VG27A M4LMQS014517'{
     pos 1080 170 res 2560x1440
+    background `find $wallpapers_path -type f | shuf -n 1` fill
 }
 output 'Dell Inc. DELL S2415H 5J1MP67306CL' {
     pos 0 0 res 1920x1080
     transform 270
+    background `find $wallpapers_path -type f | shuf -n 1` fill
 }
 output 'LBT Rokid Air 0x00000101' {
     scale 1.1
     bg #000000 solid_color
+    background `find $wallpapers_path -type f | shuf -n 1` fill
 }
 output 'Samsung Electric Company SAMSUNG 0x01000E00' {
     res 3840x2160@60hz
     scale 1.2
+    background `find $wallpapers_path -type f | shuf -n 1` fill
 }
 # VM displays
 output Virtual-2 {
     res 2560x1440 pos 1080 170
+    background `find $wallpapers_path -type f | shuf -n 1` fill
 }
 output Virtual-1 {
     res 1920x1080 pos 0 0 transform 270
+    background `find $wallpapers_path -type f | shuf -n 1` fill
 }
 output 'ViewSonic Corporation VX3276-QHD V9W232481740' {
     res 2560x1440
     scale 1.25
+    background `find $wallpapers_path -type f | shuf -n 1` fill
 }
 output 'ViewSonic Corporation VX3276-QHD V9W232481741' {
     res 2560x1440
     scale 1.25
+    background `find $wallpapers_path -type f | shuf -n 1` fill
 }
 
 # VM displays
@@ -213,8 +225,8 @@ mouse_warping container
     bindsym $mod+Right focus right
 
     # Focus the next/previous top-level sibling (works up to 7 levels of nesting)
-    bindsym $mod+Tab focus parent; focus parent; focus parent; focus parent; focus parent; focus parent; focus parent; focus parent; focus parent; focus child; focus child; focus next sibling; focus child; focus child; focus child; focus child; focus child; focus child; focus child
-    bindsym $mod+Shift+Tab focus parent; focus parent; focus parent; focus parent; focus parent; focus parent; focus parent; focus parent; focus parent; focus child; focus child; focus prev sibling; focus child; focus child; focus child; focus child; focus child; focus child; focus child
+    bindsym $mod+Tab focus parent; focus parent; focus parent; focus parent; focus parent; focus parent; focus parent; focus parent; focus parent; focus child; focus next; focus child; focus child; focus child; focus child; focus child; focus child; focus child
+    bindsym $mod+Shift+Tab focus parent; focus parent; focus parent; focus parent; focus parent; focus parent; focus parent; focus parent; focus parent; focus child; focus prev; focus child; focus child; focus child; focus child; focus child; focus child; focus child
 
     # Move the focused window with the same, but add Shift
     bindsym $mod+Shift+$left move left
@@ -230,47 +242,59 @@ mouse_warping container
 # Workspaces:
 #
     # Switch to workspace
-    bindsym $mod+m workspace number 1
-    bindsym $mod+Comma workspace number 2
-    bindsym $mod+Period workspace number 3
-    bindsym $mod+u workspace number 4
-    bindsym $mod+i workspace number 5
-    bindsym $mod+o workspace number 6
-    bindsym $mod+7 workspace number 7
-    bindsym $mod+8 workspace number 8
-    bindsym $mod+9 workspace number 9
-    bindsym $mod+0 workspace number 10
+    bindsym $mod+m workspace "a1"
+    bindsym $mod+Comma workspace "b1"
+    bindsym $mod+Period workspace "c1"
+    bindsym $mod+u workspace "a2"
+    bindsym $mod+i workspace "b2"
+    bindsym $mod+o workspace "c2"
+    bindsym $mod+7 workspace "a3"
+    bindsym $mod+8 workspace "b3"
+    bindsym $mod+9 workspace "c3"
+    bindsym $mod+0 workspace "misc"
     # Move focused container to workspace
-    bindsym $mod+Shift+m move container to workspace number 1
-    bindsym $mod+Shift+Comma move container to workspace number 2
-    bindsym $mod+Shift+Period move container to workspace number 3
-    bindsym $mod+Shift+u move container to workspace number 4
-    bindsym $mod+Shift+i move container to workspace number 5
-    bindsym $mod+Shift+o move container to workspace number 6
-    bindsym $mod+Shift+7 move container to workspace number 7
-    bindsym $mod+Shift+8 move container to workspace number 8
-    bindsym $mod+Shift+9 move container to workspace number 9
-    bindsym $mod+Shift+0 move container to workspace number 10
-    # Note: workspaces can have any name you want, not just numbers.
-    # We just use 1-10 as the default.
+    bindsym $mod+Shift+m move container to workspace "a1"
+    bindsym $mod+Shift+Comma move container to workspace "b1"
+    bindsym $mod+Shift+Period move container to workspace "c1"
+    bindsym $mod+Shift+u move container to workspace "a2"
+    bindsym $mod+Shift+i move container to workspace "b2"
+    bindsym $mod+Shift+o move container to workspace "c2"
+    bindsym $mod+Shift+7 move container to workspace "a3"
+    bindsym $mod+Shift+8 move container to workspace "b3"
+    bindsym $mod+Shift+9 move container to workspace "c3"
+    bindsym $mod+Shift+0 move container to workspace "misc"
 
     # Set default workspaces for windows
-    assign [app_id="Alacritty|foot"] workspace 1
-    assign [app_id="firefox"] workspace 1
-    assign [app_id="Slack"] workspace 3
-    assign [app_id="Chromium"] workspace 3
-    assign [all] workspace 2
+    assign [app_id="Alacritty|foot"] workspace "a1"
+    assign [app_id="firefox"] workspace "a2
+    assign [app_id="Slack"] workspace "c1"
+    assign [app_id="Chromium"] workspace "b1"
+    #assign [all] workspace 1b
     for_window [app_id="Alacritty|foot"] move window to mark _term
     for_window [app_id="firefox"] move window to mark _web
     for_window [all] focus
 
     # Set default desktops for workspaces
-    workspace 1 output 'Samsung Electric Company SAMSUNG 0x01000E00'
-    workspace 2 output 'Samsung Electric Company SAMSUNG 0x01000E00'
-    workspace 3 output 'ViewSonic Corporation VX3276-QHD V9W232481741'
-    workspace 4 output 'ViewSonic Corporation VX3276-QHD V9W232481741'
-    workspace 5 output 'ViewSonic Corporation VX3276-QHD V9W232481740'
-    workspace 6 output 'ViewSonic Corporation VX3276-QHD V9W232481740'
+    workspace "a1" output 'Samsung Electric Company SAMSUNG 0x01000E00'
+    workspace "a2" output 'Samsung Electric Company SAMSUNG 0x01000E00'
+    workspace "a3" output 'Samsung Electric Company SAMSUNG 0x01000E00'
+    workspace "b1" output 'ViewSonic Corporation VX3276-QHD V9W232481740'
+    workspace "b2" output 'ViewSonic Corporation VX3276-QHD V9W232481740'
+    workspace "b3" output 'ViewSonic Corporation VX3276-QHD V9W232481740'
+    workspace "c1" output 'ViewSonic Corporation VX3276-QHD V9W232481741'
+    workspace "c2" output 'ViewSonic Corporation VX3276-QHD V9W232481741'
+    workspace "c3" output 'ViewSonic Corporation VX3276-QHD V9W232481741'
+
+    workspace "a1" gaps vertical 100
+    workspace "a2" gaps vertical 100
+    workspace "a3" gaps vertical 100
+    workspace "a1" gaps horizontal 600
+    workspace "a2" gaps horizontal 600
+    workspace "a3" gaps horizontal 600
+
+    bindsym $mod+Delete gaps horizontal current toggle 600, gaps vertical current toggle 100
+
+    smart_gaps inverse_outer
 
     # Gaps for rokid air
     #gaps left 500
