@@ -4,3 +4,8 @@ media-libs/libpulse X
 dev-cpp/gtkmm X
 
 media-video/pipewire bluetooth echo-cancel udev pipewire-alsa sound-server gstreamer
+
+# required by media-tv/v4l-utils-1.26::gentoo
+# required by v4l-utils (argument)
+>=media-libs/libv4l-1.26.1 bpf
+
