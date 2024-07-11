@@ -279,6 +279,9 @@ mouse_warping container
     for_window [all] focus
 
     # Set default desktops for workspaces
+    set $out1 'Samsung Electric Company SAMSUNG 0x01000E00'
+    set $out2 'ViewSonic Corporation VX3276-QHD V9W232481740'
+    set $out3 'ViewSonic Corporation VX3276-QHD V9W232481741'
     workspace "a1" output 'Samsung Electric Company SAMSUNG 0x01000E00'
     workspace "a2" output 'Samsung Electric Company SAMSUNG 0x01000E00'
     workspace "a3" output 'Samsung Electric Company SAMSUNG 0x01000E00'
@@ -289,14 +292,46 @@ mouse_warping container
     workspace "c2" output 'ViewSonic Corporation VX3276-QHD V9W232481741'
     workspace "c3" output 'ViewSonic Corporation VX3276-QHD V9W232481741'
 
-    workspace "a1" gaps vertical 100
-    workspace "a2" gaps vertical 100
-    workspace "a3" gaps vertical 100
+    # Dynamic workspace assignments
+    bindsym $mod+Alt+k move workspace output up
+    bindsym $mod+Alt+j move workspace output down
+    bindsym $mod+Alt+h move workspace output left
+    bindsym $mod+Alt+l move workspace output right
+    bindsym $mod+Alt+Tab \
+        [workspace="a1"] move container to workspace "swap1"; \
+        [workspace="a2"] move container to workspace "swap2"; \
+        [workspace="a3"] move container to workspace "swap3"; \
+        [workspace="b1"] move container to workspace "a1"; \
+        [workspace="b2"] move container to workspace "a2"; \
+        [workspace="b3"] move container to workspace "a3"; \
+        [workspace="c1"] move container to workspace "b1"; \
+        [workspace="c2"] move container to workspace "b2"; \
+        [workspace="c3"] move container to workspace "b3"; \
+        [workspace="swap1"] move container to workspace "c1"; \
+        [workspace="swap2"] move container to workspace "c2"; \
+        [workspace="swap3"] move container to workspace "c3"
+    bindsym $mod+Shift+Alt+Tab \
+        [workspace="a1"] move container to workspace "swap1"; \
+        [workspace="a2"] move container to workspace "swap2"; \
+        [workspace="a3"] move container to workspace "swap3"; \
+        [workspace="c1"] move container to workspace "a1"; \
+        [workspace="c2"] move container to workspace "a2"; \
+        [workspace="c3"] move container to workspace "a3"; \
+        [workspace="b1"] move container to workspace "c1"; \
+        [workspace="b2"] move container to workspace "c2"; \
+        [workspace="b3"] move container to workspace "c3"; \
+        [workspace="swap1"] move container to workspace "b1"; \
+        [workspace="swap2"] move container to workspace "b2"; \
+        [workspace="swap3"] move container to workspace "b3"
+
+    workspace "a1" gaps top 300
+    workspace "a2" gaps top 300
+    workspace "a3" gaps top 300
     workspace "a1" gaps horizontal 600
     workspace "a2" gaps horizontal 600
     workspace "a3" gaps horizontal 600
 
-    bindsym $mod+Delete gaps horizontal current toggle 600, gaps vertical current toggle 100
+    bindsym $mod+Delete gaps horizontal current toggle 600, gaps top current toggle 300, gaps bottom current toggle 0
 
     smart_gaps inverse_outer
 
